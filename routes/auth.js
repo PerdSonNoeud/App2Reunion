@@ -13,7 +13,7 @@ router.get('/register', (req, res) => {
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password], (err, result) => {
+  pool.query('SELECT * FROM users WHERE name = $1 AND password_hash = $2', [username, password], (err, result) => {
     if (err) {
       console.error('Erreur lors de la connexion à la base de données', err);
       return res.status(500).send('Erreur serveur');
