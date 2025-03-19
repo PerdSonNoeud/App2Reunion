@@ -24,12 +24,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Routes
+// Chemine pour les routes
 app.use('/', route);
 app.use('/auth', routeAuth); // Toutes les routes dans routeAuth seront préfixées par /auth
-app.use('/new_meeting', routeNewMeeting);
+app.use('/new_meeting', routeNewMeeting); // Toutes les routes dans routeNewMeeting seront préfixées par /new_meeting
 
-// Gestion des erreurs 404 - PLACEZ CETTE ROUTE À LA FIN
+// Gestion des erreurs 404
 app.use((req, res) => {
     res.status(404).render('pages/404', { title: 'Page non trouvée', user: null });
 });
