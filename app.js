@@ -1,0 +1,33 @@
+// app.js - Point d'entrée de l'application
+
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const { pool } = require('./config/db');
+
+// Initialisation de l'application Express
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Configuration du moteur de templates EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+    res.status(404).render('pages/404', { title: 'Page non trouvée', user: null });
+});
+
+// Démarrage du serveur
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+});
+
+module.exports = app;

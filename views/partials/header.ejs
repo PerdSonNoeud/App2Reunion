@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | App de Réunion</title>
+    <link rel="stylesheet" href="/public/css/header.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/">App de Réunion</a>
+            </div>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <% if (user) { %>
+                    <li><a href="/meetings/new">Nouvelle réunion</a></li>
+                    <li class="user-info">
+                        Bonjour, <%= user.firstName %>
+                        <a href="/auth/logout" class="btn-logout">Déconnexion</a>
+                    </li>
+                <% } else { %>
+                    <li><a href="/auth/login">Connexion</a></li>
+                    <li><a href="/auth/register">Inscription</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+    <main>
