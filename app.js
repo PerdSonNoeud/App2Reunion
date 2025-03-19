@@ -8,6 +8,8 @@ const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/db');
 const route = require('./routes/index');
 const routeAuth = require('./routes/auth'); // Correction du nom de variable
+const routeNewMeeting = require('./routes/new_meeting');
+
 
 // Initialisation de l'application Express
 const app = express();
@@ -25,6 +27,7 @@ app.use(bodyParser.json());
 // Routes
 app.use('/', route);
 app.use('/auth', routeAuth); // Toutes les routes dans routeAuth seront préfixées par /auth
+app.use('/new_meeting', routeNewMeeting);
 
 // Gestion des erreurs 404 - PLACEZ CETTE ROUTE À LA FIN
 app.use((req, res) => {

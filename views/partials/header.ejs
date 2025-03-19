@@ -15,7 +15,7 @@
             <ul>
                 <li><a href="/">Accueil</a></li>
                 <% if (user) { %>
-                    <li><a href="/meetings/new">Nouvelle réunion</a></li>
+                    <li><a href="/new_meeting">Nouvelle réunion</a></li>
                     <li class="user-info">
                         Bonjour, <%= user.firstName %>
                         <a href="/auth/logout" class="btn-logout">Déconnexion</a>
