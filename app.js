@@ -9,6 +9,7 @@ const { pool } = require('./config/db');
 const route = require('./routes/index');
 const routeAuth = require('./routes/auth'); // Correction du nom de variable
 const routeNewMeeting = require('./routes/new_meeting');
+const routeMeetings = require('./routes/meetings');
 
 
 // Initialisation de l'application Express
@@ -28,6 +29,7 @@ app.use(bodyParser.json());
 app.use('/', route);
 app.use('/auth', routeAuth); // Toutes les routes dans routeAuth seront préfixées par /auth
 app.use('/new_meeting', routeNewMeeting); // Toutes les routes dans routeNewMeeting seront préfixées par /new_meeting
+app.use('/meetings', routeMeetings); // Toutes les routes dans routeMeetings seront préfixées par /meetings
 
 // Gestion des erreurs 404
 app.use((req, res) => {
