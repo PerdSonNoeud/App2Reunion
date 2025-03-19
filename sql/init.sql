@@ -14,6 +14,10 @@ CREATE TABLE meetings (
     user_id INT REFERENCES users(id)
 );
 
+INSERT INTO users (name, email, password_hash) VALUES
+('John Doe', 'doe@example.com', 'lala');
+
+
 CREATE USER admin WITH PASSWORD 'admin';
 GRANT ALL PRIVILEGES ON DATABASE reunion TO admin;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin;
