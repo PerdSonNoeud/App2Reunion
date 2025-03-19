@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 // Gestion des erreurs 404
 app.use((req, res) => {
-    res.status(404).render('pages/404', { title: 'Page non trouvée' });
+    res.status(404).render('pages/404', { title: 'Page non trouvée', user: null });
 });
 
 // Démarrage du serveur
