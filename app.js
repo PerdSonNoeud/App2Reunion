@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/db');
+const route = require('./routes/index');
+const routeAuth = require('./routes/auth'); // Correction du nom de variable
 
 // Initialisation de l'application Express
 const app = express();
@@ -20,7 +22,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Gestion des erreurs 404
+// Routes
+app.use('/', route);
+app.use('/auth', routeAuth); // Toutes les routes dans routeAuth seront préfixées par /auth
+
+// Gestion des erreurs 404 - PLACEZ CETTE ROUTE À LA FIN
 app.use((req, res) => {
     res.status(404).render('pages/404', { title: 'Page non trouvée', user: null });
 });
