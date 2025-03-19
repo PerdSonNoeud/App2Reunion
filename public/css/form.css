@@ -1,0 +1,88 @@
+.form-container.meeting-form {
+    max-width: 900px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin: 3rem auto;
+}
+
+.meeting-form h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.meeting-form h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+}
+
+.form-group {
+    margin-bottom: 1.8rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.time-slot,
+.participant {
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.time-slot .form-group,
+.participant .form-group {
+    margin-bottom: 1rem;
+}
+
+.time-slot:last-child .form-group:last-child,
+.participant:last-child .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.btn-secondary {
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
