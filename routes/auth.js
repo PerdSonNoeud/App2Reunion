@@ -29,7 +29,27 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  res.send('Traitement de l\'inscription');
+  const { username, password } = req.body;
+
+  pool.query('SELECT * FROM users WHERE name = $1', [username], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la vérification de l\'utilisateur', err);
+      return res.status(500).send('Erreur serveur');
+    }
+
+    if (result.rows.length > 0) {
+      return res.render('pages/register', { title: 'Inscription', user: null, error: 'Nom d\'utilisateur déjà pris' });
+    }
+  });
+
+  pool.query('INSERT INTO users (name, password_hash) VALUES ($1, $2)', [username, password], (err) => {
+    if (err) {
+      console.error('Erreur lors de l\'inscription', err);
+      return res.status(500).send('Erreur serveur');
+    }
+
+    res.redirect('/auth/login');
+  });
 });
 
 module.exports = router;
