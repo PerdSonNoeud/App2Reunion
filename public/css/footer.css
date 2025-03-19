@@ -1,0 +1,10 @@
+footer {
+  background-color: #f6a0a0;
+  position: sticky;
+  padding: 15px;
+  bottom: 0;
+}
+
+footer p {
+  text-align: center;
+}

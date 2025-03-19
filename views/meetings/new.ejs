@@ -1,9 +1,10 @@
 <%- include('../partials/header') %>
 
 <div class="form-container meeting-form">
+    <link rel="stylesheet" href="/css/form.css">
     <h1>Créer une nouvelle réunion</h1>
     
-    <form id="createMeetingForm">
+    <form id="createMeetingForm" action="/new_meeting" method="POST">
         <div class="form-group">
             <label for="title">Titre de la réunion</label>
             <input type="text" id="title" name="title" class="form-control" required>

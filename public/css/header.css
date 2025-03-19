@@ -1,3 +1,47 @@
+body {
+  background: lightgray;
+
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #f6a0a0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
 nav {
-    background-color: red;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+li {
+  display: inline;
+  list-style-type: none;
+  background-color: #eaeaea;
+  border: 2px solid red;
+  border-radius: 15px;
+  padding: 10px;  
+  margin: 5px;
+}
+
+.logo a {
+  font-size: 35px;
+  font-weight: 7px;
+  font-family: 'Lucida Handwriting', cursive;
+  color: blue;
+}
+
+a {
+  text-decoration: none;
+  color: darkblue;
 }
