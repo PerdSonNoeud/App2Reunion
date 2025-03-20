@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Add time slot button functionality
     const addTimeSlotBtn = document.getElementById('addTimeSlot');
     if (addTimeSlotBtn) {
       addTimeSlotBtn.addEventListener('click', function() {
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   
-    // Add participant button functionality
     const addParticipantBtn = document.getElementById('addParticipant');
     if (addParticipantBtn) {
       addParticipantBtn.addEventListener('click', function() {
