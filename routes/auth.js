@@ -29,27 +29,45 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { firstName, lastName, email, password, confirmPassword } = req.body;
 
-  pool.query('SELECT * FROM users WHERE name = $1', [username], (err, result) => {
+  if (password !== confirmPassword) {
+    return res.render('pages/register', {
+      title: 'Inscription',
+      user: null,
+      error: 'Les mots de passe ne correspondent pas'
+    });
+  }
+  const name = `${firstName} ${lastName}`;
+
+  pool.query('SELECT * FROM users WHERE email = $1', [email], (err, result) => {
     if (err) {
       console.error('Erreur lors de la vérification de l\'utilisateur', err);
       return res.status(500).send('Erreur serveur');
     }
 
     if (result.rows.length > 0) {
-      return res.render('pages/register', { title: 'Inscription', user: null, error: 'Nom d\'utilisateur déjà pris' });
+      return res.render('pages/register', {
+        title: 'Inscription',
+        user: null,
+        error: 'Cette adresse email est déjà utilisée'
+      });
     }
-  });
+    pool.query('INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)',
+      [name, email, password], (err) => {
+        if (err) {
+          console.error('Erreur lors de l\'inscription', err);
+          return res.status(500).send('Erreur serveur');
+        }
 
-  pool.query('INSERT INTO users (name, password_hash) VALUES ($1, $2)', [username, password], (err) => {
-    if (err) {
-      console.error('Erreur lors de l\'inscription', err);
-      return res.status(500).send('Erreur serveur');
-    }
-
-    res.redirect('/auth/login');
+        res.redirect('/auth/login');
+      });
   });
+});
+
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
 module.exports = router;
