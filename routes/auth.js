@@ -11,9 +11,9 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  pool.query('SELECT * FROM users WHERE name = $1 AND password_hash = $2', [username, password], (err, result) => {
+  pool.query('SELECT * FROM users WHERE email = $1 AND password_hash = $2', [email, password], (err, result) => {
     if (err) {
       console.error('Erreur lors de la connexion à la base de données', err);
       return res.status(500).send('Erreur serveur');
@@ -23,7 +23,7 @@ router.post('/login', (req, res) => {
       req.session.user = result.rows[0];
       res.redirect('/');
     } else {
-      res.render('pages/login', { title: 'Connexion', user: null, error: 'Nom d\'utilisateur ou mot de passe incorrect' });
+      res.render('pages/login', { title: 'Connexion', user: null, error: 'Email ou mot de passe incorrect' });
     }
   });
 });
