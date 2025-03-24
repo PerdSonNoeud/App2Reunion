@@ -25,6 +25,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// On utilse une session pour gérer les user 
+app.use(session({
+    store: new pgSession({
+      pool: pool,
+      tableName: 'user_sessions'
+    }),
+    secret: process.env.SESSION_SECRET || 'your_secret_key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }
+  }));
+  
+  app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+  });
+
 // Chemine pour les routes
 app.use('/', route);
 app.use('/auth', routeAuth); // Toutes les routes dans routeAuth seront préfixées par /auth

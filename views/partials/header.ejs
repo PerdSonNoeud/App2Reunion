@@ -17,7 +17,7 @@
                 <% if (user) { %>
                     <li><a href="/new_meeting">Nouvelle réunion</a></li>
                     <li class="user-info">
-                        Bonjour, <%= user.firstName %>
+                        Bonjour, <%= user.name %>
                         <a href="/auth/logout" class="btn-logout">Déconnexion</a>
                     </li>
                 <% } else { %>
