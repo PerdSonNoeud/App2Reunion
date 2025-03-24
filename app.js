@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// On utilse une session pour gérer les users
+// On utilse une session pour gérer les user 
 app.use(session({
     store: new pgSession({
       pool: pool,
