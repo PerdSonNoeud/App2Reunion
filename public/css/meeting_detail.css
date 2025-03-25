@@ -33,25 +33,6 @@
     right: calc((100% - 900px) / 2 + 2.5rem);
 }
 
-.btn-edit, .btn-delete, .btn-back {
-    background-color: #f6a0a0;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.btn-edit:hover, .btn-back:hover {
-    background-color: #f47c7c;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 .btn-delete {
     background-color: #ff4444;
 }
@@ -78,45 +59,16 @@
     transition: transform 0.3s ease;
 }
 
-.info-section:hover {
-    transform: translateY(-5px);
-}
-
-.info-section h2 {
-    font-size: 1.5rem;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f6a0a0;
-    text-align: center;
-    color: #444;
-}
-
 .info-group {
     margin-bottom: 1.8rem;
     text-align: center;
 }
-
-.info-group:last-child {
-    margin-bottom: 0;
-}
-
 .info-group label {
     display: block;
     font-weight: 600;
     margin-bottom: 0.8rem;
     color: #666;
     font-size: 1.1rem;
-}
-
-.info-group p {
-    margin: 0;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #333;
-    padding: 0.5rem;
-    background-color: white;
-    border-radius: 6px;
 }
 
 .back-link {
