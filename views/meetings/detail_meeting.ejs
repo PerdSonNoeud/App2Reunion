@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+
+<div class="meeting-detail-container">
+    <link rel="stylesheet" href="/css/meeting-detail.css">
+    
+    <div class="meeting-header">
+        <h1><%= meeting.title %></h1>
+        <div class="meeting-actions">
+            <a href="/meetings/edit/<%= meeting.id %>" class="btn-edit">Modifier</a>
+            <form action="/meetings/<%= meeting.id %>/delete" method="POST" class="delete-form">
+                <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
+                    Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="meeting-info">
+        <div class="info-section">
+            <h2>Détails</h2>
+            <div class="info-group">
+                <label>Description</label>
+                <p><%= meeting.description || 'Aucune description' %></p>
+            </div>
+            <div class="info-group">
+                <label>Organisateur</label>
+                <p><%= user.name %></p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Horaires</h2>
+            <div class="info-group">
+                <label>Début</label>
+                <p><%= new Date(meeting.start_time).toLocaleString('fr-FR', { 
+                    dateStyle: 'full', 
+                    timeStyle: 'short' 
+                }) %></p>
+            </div>
+            <div class="info-group">
+                <label>Fin</label>
+                <p><%= new Date(meeting.end_time).toLocaleString('fr-FR', { 
+                    dateStyle: 'full', 
+                    timeStyle: 'short' 
+                }) %></p>
+            </div>
+            <div class="info-group">
+                <label>Durée</label>
+                <p><%= Math.round((new Date(meeting.end_time) - new Date(meeting.start_time)) / 1000 / 60) %> minutes</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

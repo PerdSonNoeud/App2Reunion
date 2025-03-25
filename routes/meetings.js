@@ -46,11 +46,28 @@ router.get('/:id', isAuthenticated, (req, res) => {
         });
       }
       
-      res.render('meetings/detail', { 
+      res.render('meetings/detail_meeting', { 
         title: result.rows[0].title,
         user: req.session.user,
         meeting: result.rows[0]
       });
+    }
+  );
+});
+
+router.post('/:id/delete', isAuthenticated, (req, res) => {
+  const meetingId = req.params.id;
+  const userId = req.session.user.id;
+
+  pool.query(
+    'DELETE FROM meetings WHERE id = $1 AND user_id = $2',
+    [meetingId, userId],
+    (err, result) => {
+      if (err) {
+        console.error('Erreur lors de la suppression de la réunion', err);
+        return res.status(500).send('Erreur serveur');
+      }
+      res.redirect('/meetings');
     }
   );
 });
