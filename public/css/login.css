@@ -5,7 +5,7 @@
     padding: 50px;
     margin: auto;
     margin-top: 60px;
-    text-size: 15px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -24,6 +24,12 @@ label {
     font-weight: 600;
     border: none;
     text-align: center;
+}
+
+.btn:hover {
+    background-color: #f47c7c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(246, 160, 160, 0.3);
 }
 
 .form-group {
