@@ -32,7 +32,7 @@ router.get('/', isAuthenticated, (req, res) => {
 });
 
 router.get('/:id', isAuthenticated, (req, res) => {
-  const meetingId = req.params.mid;
+  const meetingId = req.params.id;
   const userId = req.session.user.uid;
   
   pool.query(
@@ -45,7 +45,6 @@ router.get('/:id', isAuthenticated, (req, res) => {
           user: req.session.user 
         });
       }
-      console.log(result.rows);
       
       res.render('meetings/detail_meeting', { 
         title: result.rows[0].title,

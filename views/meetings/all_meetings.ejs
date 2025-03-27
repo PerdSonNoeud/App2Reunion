@@ -20,7 +20,7 @@
                         <td><%= new Date(meeting.start_time).toLocaleDateString() %></td>
                         <td><%= new Date(meeting.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
                         <td>
-                            <a href="/meetings/<%= meeting.id %>" class="btn-detail">Détails</a>
+                            <a href="/meetings/<%= meeting.mid %>" class="btn-detail">Détails</a>
                         </td>
                     </tr>
                 <% }) %>
