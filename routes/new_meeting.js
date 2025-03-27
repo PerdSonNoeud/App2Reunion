@@ -16,20 +16,34 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.post('/', isAuthenticated, (req, res) => {
   const { title, description, location, startTime, endTime, participantEmail } = req.body;
-  const userId = req.session.user.id;
+  const userId = req.session.user.uid;
+  var participants = participantEmail
 
   pool.query(
-    'INSERT INTO meetings (title, description, start_time, end_time, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+    'INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES ($1, $2, $3, $4, $5) RETURNING mid',
     [title, description, startTime[0], endTime[0], userId],
-    (err, result) => {
+    (err) => {
       if (err) {
         console.error('Erreur lors de la création de la réunion', err);
         return res.status(500).send('Erreur serveur');
       }
-
-      res.redirect('/meetings');
     }
   );
+
+  for (var i = 0; i < participants.length; i++) {
+    pool.query(
+      'INSERT INTO participants (mid, uid) VALUES ($1, $2)',
+      [, userId],
+      (err) => {
+        if (err) {
+          console.error('Erreur lors de la création de la réunion', err);
+          return res.status(500).send('Erreur serveur');
+        }
+      }
+    );
+  }
+  
+  res.redirect('/meetings');
 });
 
 module.exports = router;

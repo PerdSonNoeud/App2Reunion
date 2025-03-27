@@ -11,10 +11,10 @@ const isAuthenticated = (req, res, next) => {
 };
 
 router.get('/', isAuthenticated, (req, res) => {
-  const userId = req.session.user.id;
+  const userId = req.session.user.uid;
   
   pool.query(
-    'SELECT * FROM meetings WHERE user_id = $1 ORDER BY start_time DESC',
+    'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE p.uid = $1 ORDER BY m.start_time DESC',
     [userId],
     (err, result) => {
       if (err) {
@@ -32,11 +32,11 @@ router.get('/', isAuthenticated, (req, res) => {
 });
 
 router.get('/:id', isAuthenticated, (req, res) => {
-  const meetingId = req.params.id;
-  const userId = req.session.user.id;
+  const meetingId = req.params.mid;
+  const userId = req.session.user.uid;
   
   pool.query(
-    'SELECT * FROM meetings WHERE id = $1 AND user_id = $2',
+    'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE m.mid = $1 AND p.uid = $2',
     [meetingId, userId],
     (err, result) => {
       if (err || result.rows.length === 0) {
@@ -45,6 +45,7 @@ router.get('/:id', isAuthenticated, (req, res) => {
           user: req.session.user 
         });
       }
+      console.log(result.rows);
       
       res.render('meetings/detail_meeting', { 
         title: result.rows[0].title,
@@ -60,7 +61,7 @@ router.post('/:id/delete', isAuthenticated, (req, res) => {
   const userId = req.session.user.id;
 
   pool.query(
-    'DELETE FROM meetings WHERE id = $1 AND user_id = $2',
+    'DELETE FROM meetings WHERE mid = $1 AND uid = $2',
     [meetingId, userId],
     (err, result) => {
       if (err) {
