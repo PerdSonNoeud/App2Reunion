@@ -4,28 +4,27 @@
     "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
     "main": "index.js",
     "scripts": {
-      "start": "node app.js",
-      "dev": "nodemon app.js"
+        "start": "node app.js",
+        "dev": "nodemon app.js"
     },
     "repository": {
-      "type": "git",
-      "url": "git@moule.informatique.univ-paris-diderot.fr:jinc/projet-web-2024-2025.git"
+        "type": "git",
+        "url": "git@moule.informatique.univ-paris-diderot.fr:jinc/projet-web-2024-2025.git"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "bcrypt": "^5.1.1",
-      "body-parser": "^1.20.3",
-      "connect-pg-simple": "^10.0.0",
-      "dotenv": "^16.4.7",
-      "ejs": "^3.1.10",
-      "express": "^4.21.2",
-      "express-session": "^1.18.1",
-      "nodemailer": "^6.10.0",
-      "pg": "^8.14.1"
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.20.3",
+        "connect-pg-simple": "^10.0.0",
+        "dotenv": "^16.4.7",
+        "ejs": "^3.1.10",
+        "express": "^4.21.2",
+        "express-session": "^1.18.1",
+        "nodemailer": "^6.10.0",
+        "pg": "^8.14.1"
     },
     "devDependencies": {
-      "nodemon": "^3.1.9"
+        "nodemon": "^3.1.9"
     }
-  }
-  
+}
