@@ -34,6 +34,21 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/:id', isAuthenticated, (req, res) => {
   const meetingId = req.params.id;
   const userId = req.session.user.uid;
+  var organisateur = null;
+
+  pool.query(
+    'SELECT u.* FROM users u JOIN meetings m ON m.mid = $1 WHERE m.uid = u.uid',
+    [meetingId],
+    (err, result) => {
+      if (err || result.rows.length === 0) {
+        return res.status(404).render('pages/404', {
+          title: 'Réunion non trouvée',
+          user: req.session.user
+        });
+      }
+      organisateur = result.rows[0];
+    }
+  );
   
   pool.query(
     'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE m.mid = $1 AND p.uid = $2',
@@ -49,7 +64,8 @@ router.get('/:id', isAuthenticated, (req, res) => {
       res.render('meetings/detail_meeting', { 
         title: result.rows[0].title,
         user: req.session.user,
-        meeting: result.rows[0]
+        meeting: result.rows[0],
+        orga: organisateur
       });
     }
   );

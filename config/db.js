@@ -5,7 +5,7 @@ const pool = new Pool({
     database: process.env.DB_NAME || 'reunion',
     user: process.env.DB_USER || 'admin',
     password: process.env.DB_PASSWORD || 'admin',
-    port: process.env.DB_PORT || 5433,
+    port: process.env.DB_PORT || 5432,
 });
 
 pool.connect((err) => {
