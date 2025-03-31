@@ -17,32 +17,34 @@ router.get('/', isAuthenticated, (req, res) => {
 router.post('/', isAuthenticated, (req, res) => {
   const { title, description, location, startTime, endTime, participantEmail } = req.body;
   const userId = req.session.user.uid;
-  var participants = participantEmail
+  var participants = participantEmail;
+  var meetingId;
 
   pool.query(
     'INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES ($1, $2, $3, $4, $5) RETURNING mid',
     [title, description, startTime[0], endTime[0], userId],
-    (err) => {
+    (err, result) => {
       if (err) {
         console.error('Erreur lors de la création de la réunion', err);
         return res.status(500).send('Erreur serveur');
       }
+      meetingId = result.rows[0].mid;
+
+      for (var i = 0; i < participants.length; i++) {
+        pool.query(
+          'INSERT INTO participants (mid, uid) VALUES ($1, $2)',
+          [meetingId, userId],
+          (err) => {
+            if (err) {
+              console.error('Erreur lors de la création de la réunion', err);
+              return res.status(500).send('Erreur serveur');
+            }
+          }
+        );
+      }
     }
   );
 
-  for (var i = 0; i < participants.length; i++) {
-    pool.query(
-      'INSERT INTO participants (mid, uid) VALUES ($1, $2)',
-      [, userId],
-      (err) => {
-        if (err) {
-          console.error('Erreur lors de la création de la réunion', err);
-          return res.status(500).send('Erreur serveur');
-        }
-      }
-    );
-  }
-  
   res.redirect('/meetings');
 });
 
