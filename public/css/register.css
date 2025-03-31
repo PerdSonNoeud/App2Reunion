@@ -27,6 +27,12 @@ label {
     margin-top: 2rem;
 }
 
+.btn:hover {
+    background-color: #f47c7c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(246, 160, 160, 0.3);
+}
+
 .form-row {
     display: flex;
     gap: 20px; 
