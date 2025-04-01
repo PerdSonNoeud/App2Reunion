@@ -1,5 +1,6 @@
 const express = require('express');
 const { pool } = require('../config/db');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.get('/login', (req, res) => {
@@ -13,18 +14,40 @@ router.get('/register', (req, res) => {
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  pool.query('SELECT * FROM users WHERE email = $1 AND password_hash = $2', [email, password], (err, result) => {
+
+  pool.query('SELECT * FROM users WHERE email = $1', [email], (err, result) => {
     if (err) {
-      console.error('Erreur lors de la connexion à la base de données', err);
+      console.error('Erreur lors de la vérification de l\'utilisateur', err);
       return res.status(500).send('Erreur serveur');
     }
 
-    if (result.rows.length > 0) {
-      req.session.user = result.rows[0];
-      res.redirect('/');
-    } else {
-      res.render('pages/login', { title: 'Connexion', user: null, error: 'Email ou mot de passe incorrect' });
+    if (result.rows.length === 0) {
+      return res.render('pages/login', {
+        title: 'Connexion',
+        user: null,
+        error: 'Identifiants invalides'
+      });
     }
+
+    const user = result.rows[0];
+
+    bcrypt.compare(password, user.password_hash, (err, valide) => {
+      if (err) {
+        console.error('Erreur lors de la comparaison des mots de passe', err);
+        return res.status(500).send('Erreur serveur');
+      }
+
+      if (!valide) {
+        return res.render('pages/login', {
+          title: 'Connexion',
+          user: null,
+          error: 'Identifiants invalides'
+        });
+      }
+
+      req.session.user = { uid: user.uid, name: user.name };
+      res.redirect('/meetings');
+    });
   });
 });
 
@@ -38,6 +61,7 @@ router.post('/register', (req, res) => {
       error: 'Les mots de passe ne correspondent pas'
     });
   }
+
   const name = `${firstName} ${lastName}`;
 
   pool.query('SELECT * FROM users WHERE email = $1', [email], (err, result) => {
@@ -53,15 +77,23 @@ router.post('/register', (req, res) => {
         error: 'Cette adresse email est déjà utilisée'
       });
     }
-    pool.query('INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)',
-      [name, email, password], (err) => {
-        if (err) {
-          console.error('Erreur lors de l\'inscription', err);
-          return res.status(500).send('Erreur serveur');
-        }
 
-        res.redirect('/auth/login');
-      });
+    bcrypt.hash(password, 10, (err, passwordHash) => {
+      if (err) {
+        console.error('Erreur lors du hachage du mot de passe', err);
+        return res.status(500).send('Erreur serveur');
+      }
+
+      pool.query('INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)',
+        [name, email, passwordHash], (err) => {
+          if (err) {
+            console.error('Erreur lors de l\'inscription', err);
+            return res.status(500).send('Erreur serveur');
+          }
+
+          res.redirect('/auth/login');
+        });
+    });
   });
 });
 
