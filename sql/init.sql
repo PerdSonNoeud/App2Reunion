@@ -34,8 +34,8 @@ CREATE TABLE participants (
 );
 
 INSERT INTO users (name, email, password_hash) VALUES
-('John Doe', 'doe@example.com', 'lala'),
-('Christophe Jin', 'christophejin2004@gmail.com', '1234');
+('User User', 'user@gmail.com', '$2b$10$sc7QWqesIIAjzUV8Ttvu.uORgqwwgW/sk8mr8tsJ0i8khi5Trb2aS'), --template correspond à "password"
+('Christophe Jin', 'christophejin2004@gmail.com', '$2b$10$457XRPAywfVQ4NMkq.nDSOPhXoq/SP7nhk.8jdrXkCOpBYDGN4tlq'); -- template correspond à "1234"
 
 INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES
 ('Project Kickoff', 'Initial meeting to discuss project scope', '2024-05-15 10:00:00', '2024-05-15 11:30:00', 1),
