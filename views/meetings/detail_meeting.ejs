@@ -6,9 +6,9 @@
     <div class="meeting-header">
         <h1><%= meeting.title %></h1>
         <div class="meeting-actions">
-            <% if (meeting.uid === user.id) { %>
-                <a href="/meetings/edit/<%= meeting.id %>" class="btn-edit">Modifier</a>
-                <form action="/meetings/<%= meeting.id %>/delete" method="POST" class="delete-form">
+            <% if (meeting.uid === user.uid) { %>
+                <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
+                <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
                     <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
                         Supprimer
                     </button>

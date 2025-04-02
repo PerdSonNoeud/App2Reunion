@@ -60,7 +60,7 @@ router.get('/:id', isAuthenticated, (req, res) => {
           user: req.session.user 
         });
       }
-      
+
       res.render('meetings/detail_meeting', { 
         title: result.rows[0].title,
         user: req.session.user,
@@ -73,12 +73,23 @@ router.get('/:id', isAuthenticated, (req, res) => {
 
 router.post('/:id/delete', isAuthenticated, (req, res) => {
   const meetingId = req.params.id;
-  const userId = req.session.user.id;
+  const userId = req.session.user.uid;
+
+  pool.query(
+    'DELETE FROM participants WHERE mid = $1',
+    [meetingId],
+    (err) => {
+      if (err) {
+        console.error('Erreur lors de la suppression de la réunion', err);
+        return res.status(500).send('Erreur serveur');
+      }
+    }
+  );
 
   pool.query(
     'DELETE FROM meetings WHERE mid = $1 AND uid = $2',
     [meetingId, userId],
-    (err, result) => {
+    (err) => {
       if (err) {
         console.error('Erreur lors de la suppression de la réunion', err);
         return res.status(500).send('Erreur serveur');
