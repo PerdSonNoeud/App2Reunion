@@ -2,7 +2,14 @@
 
 <div class="meetings-container">
     <link rel="stylesheet" href="/css/all_meetings.css" type="text/css">
-    <h1>Mes réunions</h1>
+    
+    <div class="header-container">
+        <h1>Mes réunions</h1>
+        <div class="view-controls">
+            <button class="btn-view active" id="liste" data-view="list">Liste</button>
+            <button class="btn-view" id="calendar" data-view="calendar">Calendrier</button>
+        </div>
+    </div>
     
     <% if (meetings && meetings.length > 0) { %>
         <table class="meetings-table">
