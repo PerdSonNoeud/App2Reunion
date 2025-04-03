@@ -23,13 +23,12 @@
                         <li class="menu-item"><a class="menu-link" href="/">Accueil</a></li>
                         <% if (user) { %>
                             <li class="menu-item"><a class="menu-link" href="/new_meeting">Nouvelle réunion</a></li>
-                            <li class="menu-item dropdown">
-                                <a class="menu-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Bonjour, <%= user.name %>
+                            <li class="menu-item"><a class="menu-link" href="/meetings">Mes réunions</a></li>
+                            <li class="menu-item ms-lg-3 user-welcome">
+                                <span class="user-name">Bonjour, <%= user.name %></span>
+                                <a class="btn-logout" href="/auth/logout">
+                                    <i class="fas fa-sign-out-alt"></i> Déconnexion
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item menu-link" href="/auth/logout">Déconnexion</a></li>
-                                </ul>
                             </li>
                         <% } else { %>
                             <li class="menu-item"><a class="menu-link" href="/auth/login">Connexion</a></li>

@@ -23,6 +23,13 @@
     line-height: 1.6;
 }
 
+.index .btn-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
 .index .btn {
     background-color: #f6a0a0;
     color: white;
@@ -33,7 +40,7 @@
     border: none;
     text-decoration: none;
     display: inline-block;
-    margin: 0 10px;
+    min-width: 200px;
     transition: all 0.3s ease;
 }
 
@@ -41,4 +48,16 @@
     background-color: #f47c7c;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(246, 160, 160, 0.3);
+}
+
+@media (max-width: 576px) {
+    .index .btn-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .index .btn {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 }

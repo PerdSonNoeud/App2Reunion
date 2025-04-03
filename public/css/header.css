@@ -22,10 +22,13 @@ body {
   font-size: 1.8rem;
   font-family: "Lucida Handwriting", cursive;
   color: #2b2b2b;
+  text-decoration: none;
 }
 
 .menu-items {
   margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
 .menu-item {
@@ -36,19 +39,60 @@ body {
   color: #2b2b2b !important;
   padding: 8px 15px !important;
   border-radius: 20px;
+  text-decoration: none;
 }
 
 .menu-link:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-logout {
+  color: #2b2b2b !important;
   background-color: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px !important;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.btn-logout:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-welcome {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .menu-items {
+    flex-direction: column;
     text-align: center;
     padding: 15px 0;
+    width: 100%;
   }
   
   .menu-item {
     margin: 5px 0;
+    width: 100%;
+  }
+  
+  .user-welcome {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  
+  .btn-logout {
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
   }
 }
