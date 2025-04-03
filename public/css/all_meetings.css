@@ -111,7 +111,6 @@
     padding: 0.5rem 1.2rem;
     border: none;
     border-radius: 20px;
-    cursor: pointer;
     font-weight: 600;
 }
 
@@ -121,7 +120,6 @@
     box-shadow: 0 2px 5px rgba(246, 160, 160, 0.3);
 }
 
-/* Styles responsives */
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
