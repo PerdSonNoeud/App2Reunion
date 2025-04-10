@@ -2,6 +2,7 @@
 
 <div class="meetings-container">
     <link rel="stylesheet" href="/css/all_meetings.css" type="text/css">
+    <link rel="stylesheet" href="/css/calendar.css" type="text/css">
     
     <div class="header-container">
         <h1>Mes réunions</h1>
@@ -11,31 +12,50 @@
         </div>
     </div>
     
-    <% if (meetings && meetings.length > 0) { %>
-        <table class="meetings-table">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Date</th>
-                    <th>Heure</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% meetings.forEach(meeting => { %>
+    <div id="list-view">
+        <% if (meetings && meetings.length > 0) { %>
+            <table class="meetings-table">
+                <thead>
                     <tr>
-                        <td><%= meeting.title %></td>
-                        <td><%= new Date(meeting.start_time).toLocaleDateString() %></td>
-                        <td><%= new Date(meeting.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
-                        <td>
-                            <a href="/meetings/<%= meeting.mid %>" class="btn-detail">Détails</a>
-                        </td>
+                        <th>Titre</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Actions</th>
                     </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    <% } else { %>
-        <p class="no-meetings">Vous n'avez pas encore créé de réunion.</p>
+                </thead>
+                <tbody>
+                    <% meetings.forEach(meeting => { %>
+                        <tr>
+                            <td><%= meeting.title %></td>
+                            <td><%= new Date(meeting.start_time).toLocaleDateString() %></td>
+                            <td><%= new Date(meeting.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                            <td>
+                                <a href="/meetings/<%= meeting.mid %>" class="btn-detail">Détails</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p class="no-meetings">Vous n'avez pas encore créé de réunion.</p>
+        <% } %>
+    </div>
+    
+    <div id="calendar-view" style="display: none;">
+        <div id="calendar-container" class="calendar-container" data-meetings="<%= JSON.stringify(meetings) %>">
+            <div class="calendar-header">
+                <div id="month-year" class="month-year"></div>
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" id="prev-month">&lt; Mois précédent</button>
+                    <button class="calendar-nav-btn" id="next-month">Mois suivant &gt;</button>
+                </div>
+            </div>
+            <div id="calendar-grid" class="calendar-grid">
+            </div>
+        </div>
+    </div>
+    
+    <% if (!meetings || meetings.length === 0) { %>
         <div class="cta-container">
             <a href="/new_meeting" class="btn-primary">Créer ma première réunion</a>
         </div>
