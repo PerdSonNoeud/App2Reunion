@@ -1,123 +1,123 @@
 .calendar-container {
-    margin-top: 2rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px 8px 0 0;
-    border-bottom: 2px solid #f6a0a0;
-  }
-  
-  .month-year {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .calendar-nav {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .calendar-nav-btn {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    color: #666;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .calendar-nav-btn:hover {
-    background-color: #f6a0a0;
-    color: white;
-    border-color: #f6a0a0;
-  }
-  
+  margin-top: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid #f6a0a0;
+}
+
+.month-year {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.calendar-nav-btn {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+  background-color: #f6a0a0;
+  color: white;
+  border-color: #f6a0a0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 1rem;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.calendar-day {
+  min-height: 100px;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.calendar-day:nth-child(7n) {
+  border-right: none;
+}
+
+.calendar-day.empty {
+  background-color: #f9f9f9;
+}
+
+.calendar-day.today {
+  background-color: rgba(246, 160, 160, 0.1);
+  border: 2px solid #f6a0a0;
+}
+
+.date-number {
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-align: right;
+  color: #555;
+}
+
+.calendar-event {
+  background-color: #f6a0a0;
+  color: white;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-event a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
   .calendar-grid {
-    display: grid;
     grid-template-columns: repeat(7, 1fr);
-    padding: 1rem;
   }
-  
-  .calendar-day-header {
-    text-align: center;
-    font-weight: 600;
-    color: #333;
-    padding: 1rem 0;
-    border-bottom: 1px solid #eee;
-  }
-  
+
   .calendar-day {
-    min-height: 100px;
-    border-right: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    padding: 5px;
-    overflow: hidden;
-  }
-  
-  .calendar-day:nth-child(7n) {
-    border-right: none;
-  }
-  
-  .calendar-day.empty {
-    background-color: #f9f9f9;
-  }
-  
-  .calendar-day.today {
-    background-color: rgba(246, 160, 160, 0.1);
-    border: 2px solid #f6a0a0;
-  }
-  
-  .date-number {
-    font-weight: 600;
-    margin-bottom: 5px;
-    text-align: right;
-    color: #555;
-  }
-  
-  .calendar-event {
-    background-color: #f6a0a0;
-    color: white;
-    margin-bottom: 5px;
-    border-radius: 3px;
-    padding: 3px 6px;
+    min-height: 60px;
     font-size: 0.8rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
-  
-  .calendar-event a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+  .calendar-event {
+    padding: 2px 4px;
+    font-size: 0.7rem;
   }
-  
-  @media (max-width: 768px) {
-    .calendar-grid {
-      grid-template-columns: repeat(7, 1fr);
-    }
-    
-    .calendar-day {
-      min-height: 60px;
-      font-size: 0.8rem;
-    }
-    
-    .calendar-event {
-      padding: 2px 4px;
-      font-size: 0.7rem;
-    }
-  }
+}
