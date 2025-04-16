@@ -38,8 +38,8 @@ INSERT INTO users (name, email, password_hash) VALUES
 ('Christophe Jin', 'christophejin2004@gmail.com', '$2b$10$457XRPAywfVQ4NMkq.nDSOPhXoq/SP7nhk.8jdrXkCOpBYDGN4tlq'); -- template correspond à "1234"
 
 INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES
-('Project Kickoff', 'Initial meeting to discuss project scope', '2025-05-15 10:00:00', '2024-05-15 11:30:00', 1),
-('Weekly Standup', 'Weekly team standup meeting', '2025-05-15 09:00:00', '2024-05-15 09:30:00', 1);
+('Project Kickoff', 'Initial meeting to discuss project scope', '2025-05-15 10:00:00', '2025-05-15 11:30:00', 1),
+('Weekly Standup', 'Weekly team standup meeting', '2025-05-15 09:00:00', '2025-05-15 09:30:00', 1);
 
 INSERT INTO participants (mid, uid) VALUES
 (1, 1),
