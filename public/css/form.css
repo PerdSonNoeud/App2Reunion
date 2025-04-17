@@ -2,8 +2,9 @@
     max-width: 900px;
     background-color: white;
     border-radius: 12px;
-    padding: 2.5rem;
-    margin: 3rem auto;
+    padding: 50px;   
+    margin: 60px auto;   
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .meeting-form h1 {
@@ -11,6 +12,7 @@
     margin-bottom: 2rem;
     font-size: 2.2rem;
     font-weight: 700;
+    color: #333;   
 }
 
 .meeting-form h2 {
@@ -18,6 +20,8 @@
     margin-top: 2.5rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
+    color: #333;   
+    border-bottom: 1px solid #f6a0a0;   
 }
 
 .form-group {
@@ -28,6 +32,7 @@
     display: block;
     font-weight: 600;
     margin-bottom: 0.6rem;
+    color: #666;   
 }
 
 .form-control {
@@ -35,10 +40,14 @@
     padding: 0.875rem 1rem;
     border-radius: 8px;
     font-size: 1rem;
+    border: 2px solid #eee;   
+    transition: border-color 0.3s ease;
 }
 
 .form-control:focus {
     outline: none;
+    border-color: #f6a0a0;   
+    box-shadow: 0 0 0 3px rgba(246, 160, 160, 0.2);
 }
 
 textarea.form-control {
@@ -48,10 +57,12 @@ textarea.form-control {
 
 .time-slot,
 .participant {
+    background-color: #f8f8f8;   
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .time-slot .form-group,
@@ -71,18 +82,57 @@ textarea.form-control {
     display: inline-flex;
     align-items: center;
     margin-bottom: 1rem;
+    background-color: #f8f8f8;
+    color: #666;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #eaeaea;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);   
 }
 
 .btn {
-    display: inline-block;
-    border: none;
+    background-color: #f6a0a0;
     color: white;
-    font-weight: 700;
+    font-weight: 600;   
     padding: 1rem 2rem;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 20px;   
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;   
+}
+
+.btn:hover {
+    background-color: #f47c7c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(246, 160, 160, 0.3);
 }
 
 .mt-4 {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+ 
+@media (max-width: 768px) {
+    .form-container.meeting-form {
+        padding: 30px;
+        margin: 30px 15px;
+    }
+    
+    .time-slot,
+    .participant {
+        padding: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
 }
