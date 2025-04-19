@@ -26,7 +26,23 @@
             </div>
             <div class="info-group">
                 <label>Organisateur</label>
-                <p><%= orga.name %></p>
+                <p> <%= meeting.organizer_name %></p>
+            </div>
+            <div class="info-group">
+                <label>Participants</label>
+                <ul class="participants-list">
+                    <% if (participants && participants.length > 0) { %>
+                        <% participants.forEach(participant => { %>
+                            <li><%= participant.name %> (<%= participant.email %>)</li>
+                        <% }) %>
+                    <% } else { %>
+                        <li>Aucun participant</li>
+                    <% } %>
+                </ul>
+            </div>
+            <div class="info-group">
+                <label>Lieu</label>
+                <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
             </div>
         </div>
 

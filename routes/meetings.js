@@ -2,7 +2,6 @@ const express = require('express');
 const { pool } = require('../config/db');
 const router = express.Router();
 const notificationService = require('./notificationService');
-const crypto = require('crypto');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
