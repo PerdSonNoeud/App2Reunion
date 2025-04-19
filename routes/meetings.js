@@ -470,6 +470,8 @@ router.post('/:id/remind', isAuthenticated, async (req, res) => {
   }
 });
 
+
+// Route pour supprimer une réunion
 router.post('/:id/delete', isAuthenticated, (req, res) => {
   const meetingId = req.params.id;
   const userId = req.session.user.uid;

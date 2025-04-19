@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 
+// configurer le transporteur Nodemailer
 const tranport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || 'gmail',  
   auth: {
@@ -8,6 +9,7 @@ const tranport = nodemailer.createTransport({
   }
 });
 
+// pour gen un lien unique pour chaque utilisateur
 const inviteRegisteredUserTemplate = (meeting, timeSlots, responseUrl) => {
     const timeSlotsHtml = timeSlots.map(slot => {
         return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -31,6 +33,7 @@ const inviteRegisteredUserTemplate = (meeting, timeSlots, responseUrl) => {
     `;
 };
 
+// pour les invités sans compte
 const inviteGuest = (meeting, timeSlots, responseUrl) => {
   const timeSlotsHtml = timeSlots.map(slot => {
       return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -54,6 +57,7 @@ const inviteGuest = (meeting, timeSlots, responseUrl) => {
 `;
 };
 
+// notif pour reppeler l'invité de répondre à l'invitation
 const reminderTemplate = (meeting, timeSlots, responseUrl) => {
   const timeSlotsHtml = timeSlots.map(slot => {
       return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -77,6 +81,8 @@ const reminderTemplate = (meeting, timeSlots, responseUrl) => {
   `;
 };
 
+
+// fonction pour envoyer l'email
 const sendEmail = async (to, subject, html) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
