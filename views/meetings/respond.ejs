@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<div class="respond-container">
+  <link rel="stylesheet" href="/css/index.css">
+  
+  <h1>Répondre à la réunion</h1>
+  
+  <div class="meeting-info">
+    <h2><%= meeting.title %></h2>
+    <% if (meeting.description) { %>
+      <p class="description"><%= meeting.description %></p>
+    <% } %>
+  </div>
+  
+  <form action="/meetings/<%= meeting.mid %>/respond" method="POST">
+    <div class="time-slots">
+      <h3>Veuillez indiquer vos disponibilités</h3>
+      
+      <% if (timeSlots.length === 0) { %>
+        <p class="no-slots">Aucun créneau n'a été proposé pour cette réunion.</p>
+      <% } else { %>
+        <% timeSlots.forEach(slot => { %>
+          <div class="time-slot">
+            <div class="slot-info">
+              <div class="slot-date">
+                <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+              </div>
+              <div class="slot-time">
+                <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %> - 
+                <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+              </div>
+            </div>
+            
+            <div class="slot-responses">
+              <div class="response-option">
+                <input type="radio" name="responses[<%= slot.tid %>]" id="available-<%= slot.tid %>" value="available" 
+                  <%= userResponses[slot.tid] === 'available' ? 'checked' : '' %>>
+                <label for="available-<%= slot.tid %>" class="available">Disponible</label>
+              </div>
+              
+              <div class="response-option">
+                <input type="radio" name="responses[<%= slot.tid %>]" id="maybe-<%= slot.tid %>" value="maybe"
+                  <%= userResponses[slot.tid] === 'maybe' ? 'checked' : '' %>>
+                <label for="maybe-<%= slot.tid %>" class="maybe">Peut-être</label>
+              </div>
+              
+              <div class="response-option">
+                <input type="radio" name="responses[<%= slot.tid %>]" id="unavailable-<%= slot.tid %>" value="unavailable"
+                  <%= userResponses[slot.tid] === 'unavailable' ? 'checked' : '' %>>
+                <label for="unavailable-<%= slot.tid %>" class="unavailable">Indisponible</label>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Enregistrer mes réponses</button>
+      <a href="/meetings/<%= meeting.mid %>" class="btn-secondary">Annuler</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

@@ -26,7 +26,26 @@
             </div>
             <div class="info-group">
                 <label>Organisateur</label>
-                <p><%= orga.name %></p>
+                <p> <%= organizer.name %></p>
+            </div>
+            <div class="info-group">
+                <label>Participants</label>
+                <ul class="participants-list">
+                    <% if (participants && participants.length > 0) { %>
+                        <% participants.forEach(participant => { %>
+                            <li><%= participant.name %> (<%= participant.email %>)</li>
+                        <% }) %>
+                    <% } else { %>
+                        <li>Aucun participant</li>
+                    <% } %>
+                </ul>
+            </div>
+            <div class="info-group">
+                <label>Lieu</label>
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
+                </div>
             </div>
         </div>
 
@@ -50,6 +69,14 @@
                 <label>Durée</label>
                 <p><%= Math.round((new Date(meeting.end_time) - new Date(meeting.start_time)) / 1000 / 60) %> minutes</p>
             </div>
+
+            <% if (meeting.uid === user.uid) { %>
+                <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
+                  <button type="submit" class="btn-reminder">
+                    Envoyer un rappel aux participants sans réponse
+                  </button>
+                </form>
+              <% } %>
         </div>
     </div>
 
