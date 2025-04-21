@@ -1,4 +1,77 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  /////////////////////////////
+  //                         //
+  //  Gestion des notifs     //
+  //                         //
+  /////////////////////////////
+
+  const notificationsToggle = document.querySelector('.notifications-toggle');
+  const notificationsWrapper = document.querySelector('.notifications-wrapper');
+  const markReadButtons = document.querySelectorAll('.mark-read-btn');
+
+  if (notificationsToggle) {
+    notificationsToggle.addEventListener('click', function () {
+      notificationsWrapper.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function (event) {
+      if (notificationsWrapper && !notificationsWrapper.contains(e.target)) {
+        notificationsWrapper.classList.remove('active');
+      }
+    });
+  }
+
+  if (markReadButtons.length > 0) {
+    markReadButtons.forEach(button => {
+      button.addEventListener('click', async function (e) {
+        e.preventDefault();
+        const notificationId = this.getAttribute('data-nid');
+
+        try {
+          // Marquer la notification comme lue sur le serveur
+          const response = await fetch(`/notifications/${notificationId}/read`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            // Supprimer la notification de l'interface
+            const notificationItem = document.querySelector(`.notification-item[data-nid="${notificationId}"]`);
+            if (notificationItem) {
+              notificationItem.remove();
+            }
+
+            // On mets a jour le compteru pour les notifs
+            const badge = document.querySelector('.notification-badge');
+            if (badge) {
+              const count = parseInt(badge.textContent) - 1;
+              if (count <= 0) {
+                badge.remove();
+              } else {
+                badge.textContent = count;
+              }
+            }
+
+            // Afficher un message s'il n'y a plus de notifications
+            const notificationList = document.querySelector('.notification-list');
+            if (notificationList && notificationList.children.length === 0) {
+              const noNotifications = document.createElement('p');
+              noNotifications.className = 'no-notifications';
+              noNotifications.textContent = 'Vous n\'avez pas de nouvelles notifications';
+              notificationList.parentNode.replaceChild(noNotifications, notificationList);
+            }
+          }
+        } catch (error) {
+          console.error('Erreur lors du marquage de la notification comme lue', error);
+        }
+      });
+    });
+  }
+
+
   const addTimeSlotBtn = document.getElementById("addTimeSlot");
   if (addTimeSlotBtn) {
     addTimeSlotBtn.addEventListener("click", function () {
