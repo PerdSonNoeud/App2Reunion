@@ -30,8 +30,8 @@ router.post('/', isAuthenticated, async (req, res) => {
     
     // Créer la réunion
     const meetingResult = await pool.query(
-      'INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES ($1, $2, $3, $4, $5) RETURNING mid',
-      [title, description, startTime[0], endTime[0], userId]
+      'INSERT INTO meetings (title, description, location, start_time, end_time, uid) VALUES ($1, $2, $3, $4, $5, $6) RETURNING mid',
+      [title, description, location, startTime[0], endTime[0], userId]
     );
     
     const meetingId = meetingResult.rows[0].mid;

@@ -232,7 +232,7 @@ const notificationService = {
         await notificationService.createNotification(
           user.uid,
           meetingId,
-          `Rappel: Vous n'avez pas encore répondu à l'invitation pour "${meeting.title}"`,
+          `Rappel: Vous êtes invités pour : "${meeting.title}"`,
           'reminder'
         );
 
