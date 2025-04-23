@@ -6,12 +6,14 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { pool } = require('./config/db');
+
 const route = require('./routes/index');
 const routeAuth = require('./routes/auth');
 const routeNewMeeting = require('./routes/new_meeting');
 const routeMeetings = require('./routes/meetings');
 const notificationService = require('./routes/notificationService');
 const routeNotifications = require('./routes/notifications');
+const routeImportMeeting = require('./routes/import_meeting');
 
 
 // Initialisation de l'application Express
@@ -64,6 +66,7 @@ app.use('/auth', routeAuth);
 app.use('/new_meeting', routeNewMeeting);
 app.use('/meetings', routeMeetings);
 app.use('/notifications', routeNotifications);
+app.use('/import_meeting', routeImportMeeting);
 
 // Gestion des erreurs 404
 app.use((req, res) => {

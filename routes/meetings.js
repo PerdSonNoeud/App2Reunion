@@ -13,6 +13,7 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, (req, res) => {
   const userId = req.session.user.uid;
+  const valid = req.query.valid || null;
   
   pool.query(
     'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE p.uid = $1 ORDER BY m.start_time DESC',
@@ -26,7 +27,8 @@ router.get('/', isAuthenticated, (req, res) => {
       res.render('meetings/all_meetings', { 
         title: 'Mes réunions', 
         user: req.session.user,
-        meetings: result.rows 
+        meetings: result.rows,
+        valid: valid
       });
     }
   );
