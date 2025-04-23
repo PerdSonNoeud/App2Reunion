@@ -379,78 +379,137 @@ router.post('/:id/respond', isAuthenticated, async (req, res) => {
 
     let allUnavailable = true
 
-    // Pour chaque réponse
-    for (const [timeSlotId, availability] of Object.entries(responses)) {
-      // Vérifier que le créneau appartient à cette réunion
-      const timeSlotResult = await pool.query(
-        'SELECT * FROM time_slots WHERE tid = $1 AND mid = $2',
-        [timeSlotId, meetingId]
-      )
+    const timeSlotsResult = await pool.query(
+      'SELECT * FROM time_slots WHERE mid = $1',
+      [meetingId]
+    );
 
-      if (timeSlotResult.rows.length === 0) continue
+    const timeSlots = timeSlotsResult.rows;
 
-      // Insérer ou mettre à jour la réponse
-      await pool.query(
-        `INSERT INTO responses (tid, uid, availability) 
-         VALUES ($1, $2, $3) 
-         ON CONFLICT (tid, uid) DO UPDATE SET availability = $3`,
-        [timeSlotId, userId, availability]
-      )
+    if (Array.isArray(responses)) {
+      console.log("Format de réponse détecté: tableau");
+      
+      // Parcourir les créneaux et associer les réponses par position
+      for (let i = 0; i < timeSlots.length; i++) {
+        const timeSlot = timeSlots[i];
+        const availability = responses[i] || 'unavailable'; // Valeur par défaut si manquante
+        
+        console.log(`Créneau ${timeSlot.tid}, disponibilité: ${availability}`);
+        
+        // CORRECTION: Utiliser la table responses pour les utilisateurs enregistrés
+        await pool.query(
+          `INSERT INTO responses (tid, uid, availability) 
+           VALUES ($1, $2, $3) 
+           ON CONFLICT (uid, tid) DO UPDATE SET availability = $3`,
+          [timeSlot.tid, userId, availability]
+        );
+        
+        // Vérifier la disponibilité
+        if (availability === 'available' || availability === 'maybe') {
+          allUnavailable = false;
+          console.log("L'utilisateur est disponible pour au moins un créneau");
+        }
+      }
+    } else {
+      // Format d'origine (objet avec des clés pour chaque créneau)
+      for (const [timeSlotId, availability] of Object.entries(responses)) {
+        // Ajout pour débuguer
+        console.log(`Créneau ${timeSlotId}, disponibilité: ${availability}`);
+        
+        // Vérifier que le créneau appartient à cette réunion
+        const timeSlotResult = await pool.query(
+          'SELECT * FROM time_slots WHERE tid = $1 AND mid = $2',
+          [timeSlotId, meetingId]
+        )
 
-      // Vérifier si l'utilisateur a répondu "disponible" ou "peut-être"
-      if (availability === 'available' || availability === 'maybe') {
-        allUnavailable = false
+        if (timeSlotResult.rows.length === 0) continue
+
+        const existingResponse = await pool.query(
+          'SELECT rid FROM responses WHERE tid = $1 AND uid = $2',
+          [timeSlotId, userId]
+        );
+        
+        if (existingResponse.rows.length > 0) {
+          // Mise à jour si la réponse existe
+          await pool.query(
+            'UPDATE responses SET availability = $1 WHERE tid = $2 AND uid = $3',
+            [availability, timeSlotId, userId]
+          );
+        } else {
+          // Insertion sinon
+          await pool.query(
+            'INSERT INTO responses (tid, uid, availability) VALUES ($1, $2, $3)',
+            [timeSlotId, userId, availability]
+          );
+        }
+
+        // Vérifier la disponibilité
+        if (availability === 'available' || availability === 'maybe') {
+          allUnavailable = false;
+          console.log("L'utilisateur est disponible pour au moins un créneau");
+        }
       }
     }
 
+    // AJOUT: Mettre à jour le statut de participation
     if (allUnavailable) {
       await pool.query(
         'UPDATE participants SET status = $1 WHERE mid = $2 AND uid = $3',
         ['declined', meetingId, userId]
-      )
-
+      );
+      
       // Notifier l'organisateur
       const meetingResult = await pool.query(
-        'SELECT m.title, u.uid, u.name FROM meetings m JOIN users u ON m.uid = u.uid WHERE m.mid = $1',
+        'SELECT m.title, u.uid FROM meetings m JOIN users u ON m.uid = u.uid WHERE m.mid = $1',
         [meetingId]
-      )
+      );
 
       if (meetingResult.rows.length > 0) {
-        const meeting = meetingResult.rows[0]
-        const organizerUid = meeting.uid
-        const currentUserResult = await pool.query(
-          'SELECT name FROM users WHERE uid = $1',
-          [userId]
-        )
-        const currentUserName = currentUserResult.rows[0].name
+        const meeting = meetingResult.rows[0];
+        const organizerUid = meeting.uid;
+        const userName = req.session.user.name;
 
-        // Créer une notification pour l'organisateur
         await notificationService.createNotification(
           organizerUid,
           meetingId,
-          `${currentUserName} a décliné tous les créneaux pour "${meeting.title}"`,
+          `${userName} a décliné tous les créneaux pour "${meeting.title}"`,
           'decline'
-        )
+        );
       }
     } else {
       await pool.query(
         'UPDATE participants SET status = $1 WHERE mid = $2 AND uid = $3',
         ['confirmed', meetingId, userId]
-      )
+      );
+      
+      // Notifier l'organisateur
+      const meetingResult = await pool.query(
+        'SELECT m.title, u.uid FROM meetings m JOIN users u ON m.uid = u.uid WHERE m.mid = $1',
+        [meetingId]
+      );
+
+      if (meetingResult.rows.length > 0) {
+        const meeting = meetingResult.rows[0];
+        const organizerUid = meeting.uid;
+        const userName = req.session.user.name;
+
+        await notificationService.createNotification(
+          organizerUid,
+          meetingId,
+          `${userName} a confirmé sa disponibilité pour "${meeting.title}"`,
+          'confirm'
+        );
+      }
     }
 
     // Valider la transaction
-    await pool.query('COMMIT')
-
-    // Marquer les notifications liées comme lues
-    await pool.query(
-      "UPDATE notifications SET is_read = TRUE WHERE uid = $1 AND mid = $2 AND type IN ('invitation', 'reminder')",
-      [userId, meetingId]
-    )
-
-    checkAllParticipantsDeclined(meetingId) // Vérifier si tous les participants ont décliné
-
-    res.redirect(`/meetings/${meetingId}`)
+    await pool.query('COMMIT');
+    
+    // Vérifier si tous les participants ont décliné
+    checkAllParticipantsDeclined(meetingId);
+    
+    // Rediriger vers la page de détails de la réunion
+    res.redirect(`/meetings/${meetingId}`);
   } catch (error) {
     // Annuler la transaction en cas d'erreur
     await pool.query('ROLLBACK')

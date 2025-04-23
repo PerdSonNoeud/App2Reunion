@@ -107,6 +107,7 @@ CREATE INDEX "IDX_session_expire" ON "user_sessions" ("expire");
 
 ALTER TABLE participants ADD COLUMN status VARCHAR(20) DEFAULT 'pending';
 ALTER TABLE guest_participants ADD COLUMN status VARCHAR(20) DEFAULT 'pending';
+ALTER TABLE responses ADD CONSTRAINT unique_user_timeslot UNIQUE (uid, tid);
 
 CREATE USER admin WITH PASSWORD 'admin';
 GRANT ALL PRIVILEGES ON DATABASE reunion TO admin;
