@@ -7,6 +7,7 @@
     <div class="header-container">
         <h1>Mes réunions</h1>
         <div class="view-controls">
+            <a href="/import_meeting" class="btn-view">Importer</a>
             <button class="btn-view active" id="liste" data-view="list">Liste</button>
             <button class="btn-view" id="calendar" data-view="calendar">Calendrier</button>
         </div>
@@ -71,6 +72,11 @@
         <div class="cta-container">
             <a href="/new_meeting" class="btn-primary">Créer ma première réunion</a>
         </div>
+    <% } %>
+</div>
+<div class="import-result">
+    <% if (valid) { %>
+        <p class="success-message"><%= valid %></p>
     <% } %>
 </div>
 

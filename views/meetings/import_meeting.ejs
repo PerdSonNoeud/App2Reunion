@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="header">
+        <h1>Importer une réunion</h1>
+        <p>Importez vos réunions à partir d'un fichier ICalendar.</p>
+    </div>
+
+    <div class="import-form">
+        <form action="/import_meeting/" method="POST" enctype="multipart/form-data">
+            <label for="file">Sélectionnez un fichier ICalendar (.ics) :</label>
+            <input type="file" id="file" name="calendar" accept=".ics" required>
+            <br>
+            <button type="submit" class="btn-primary">Importer</button>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

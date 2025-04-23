@@ -61,12 +61,35 @@ const isAuthenticated = (req, res, next) => {
   } else {
     res.redirect('/auth/login')
   }
-}
+};
 
-// Route pour accéder à la page de réponse pour les invités (sans compte)
-router.get('/guest/:token', async (req, res) => {
-  const token = req.params.token
+router.get('/', isAuthenticated, (req, res) => {
+  const userId = req.session.user.uid;
+  const valid = req.query.valid || null;
+  
+  pool.query(
+    'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE p.uid = $1 ORDER BY m.start_time DESC',
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.error('Erreur lors de la récupération des réunions', err);
+        return res.status(500).send('Erreur serveur');
+      }
+      
+      res.render('meetings/all_meetings', { 
+        title: 'Mes réunions', 
+        user: req.session.user,
+        meetings: result.rows,
+        valid: valid
+      });
+    }
+  );
+});
 
+router.get('/:id', isAuthenticated, async (req, res) => {
+  const meetingId = req.params.id;
+  const userId = req.session.user.uid;
+  
   try {
     // Récupérer l'invité correspondant au token
     const guestResult = await pool.query(
@@ -798,4 +821,4 @@ router.get('/', isAuthenticated, (req, res) => {
   )
 })
 
-module.exports = router
+module.exports = router;
