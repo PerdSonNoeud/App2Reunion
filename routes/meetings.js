@@ -159,7 +159,7 @@ router.post('/guest/:token/respond', async (req, res) => {
     
     const timeSlots = timeSlotsResult.rows;
     
-    // Cas où responses est un tableau au lieu d'un objet
+    // On vérifie si le format de responses est un tableau ou un objet 
     if (Array.isArray(responses)) {
       console.log("Format de réponse détecté: tableau");
       
@@ -185,10 +185,8 @@ router.post('/guest/:token/respond', async (req, res) => {
         }
       }
     } else {
-      // Format d'origine (objet avec des clés pour chaque créneau)
+      // Format d'origine 
       for (const [timeSlotId, availability] of Object.entries(responses)) {
-        // Ajout pour débuguer
-        console.log(`Créneau ${timeSlotId}, disponibilité: ${availability}`);
         
         // Vérifier que le créneau appartient à cette réunion
         const timeSlotResult = await pool.query(
@@ -209,12 +207,9 @@ router.post('/guest/:token/respond', async (req, res) => {
         // Vérifier la disponibilité
         if (availability === 'available' || availability === 'maybe') {
           allUnavailable = false;
-          console.log("L'utilisateur est disponible pour au moins un créneau");
         }
       }
     }
-
-    console.log("Statut final - allUnavailable:", allUnavailable);
 
     if (allUnavailable) {
       await pool.query(
@@ -386,17 +381,16 @@ router.post('/:id/respond', isAuthenticated, async (req, res) => {
 
     const timeSlots = timeSlotsResult.rows;
 
+    // On vérifie si le format de responses est un tableau ou un objet
     if (Array.isArray(responses)) {
       console.log("Format de réponse détecté: tableau");
       
       // Parcourir les créneaux et associer les réponses par position
       for (let i = 0; i < timeSlots.length; i++) {
         const timeSlot = timeSlots[i];
-        const availability = responses[i] || 'unavailable'; // Valeur par défaut si manquante
+        const availability = responses[i] || 'unavailable';
         
-        console.log(`Créneau ${timeSlot.tid}, disponibilité: ${availability}`);
         
-        // CORRECTION: Utiliser la table responses pour les utilisateurs enregistrés
         await pool.query(
           `INSERT INTO responses (tid, uid, availability) 
            VALUES ($1, $2, $3) 
@@ -407,14 +401,11 @@ router.post('/:id/respond', isAuthenticated, async (req, res) => {
         // Vérifier la disponibilité
         if (availability === 'available' || availability === 'maybe') {
           allUnavailable = false;
-          console.log("L'utilisateur est disponible pour au moins un créneau");
         }
       }
     } else {
       // Format d'origine (objet avec des clés pour chaque créneau)
       for (const [timeSlotId, availability] of Object.entries(responses)) {
-        // Ajout pour débuguer
-        console.log(`Créneau ${timeSlotId}, disponibilité: ${availability}`);
         
         // Vérifier que le créneau appartient à cette réunion
         const timeSlotResult = await pool.query(
@@ -446,12 +437,10 @@ router.post('/:id/respond', isAuthenticated, async (req, res) => {
         // Vérifier la disponibilité
         if (availability === 'available' || availability === 'maybe') {
           allUnavailable = false;
-          console.log("L'utilisateur est disponible pour au moins un créneau");
         }
       }
     }
 
-    // AJOUT: Mettre à jour le statut de participation
     if (allUnavailable) {
       await pool.query(
         'UPDATE participants SET status = $1 WHERE mid = $2 AND uid = $3',

@@ -3,14 +3,17 @@ const { pool } = require('../config/db');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 
+// Middleware pour vérifier si l'utilisateur est authentifié
 router.get('/login', (req, res) => {
   res.render('pages/login', { title: 'Connexion', user: null });
 });
 
+// GET /auth/register
 router.get('/register', (req, res) => {
   res.render('pages/register', { title: 'Inscription', user: null });
 });
 
+// POST /auth/login
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -51,6 +54,7 @@ router.post('/login', (req, res) => {
   });
 });
 
+// POST /auth/register
 router.post('/register', (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
@@ -97,6 +101,7 @@ router.post('/register', (req, res) => {
   });
 });
 
+// POST /auth/logout
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
