@@ -240,7 +240,7 @@ const notificationService = {
       }
 
       // Envoyer un email
-      const emailContent = reminderTemplate(meeting, timeSlots, responseUrl);
+      const emailContent = inviteRegisteredUserTemplate(meeting, timeSlots, responseUrl, userEmail);
       
       await sendEmail(
         userEmail,

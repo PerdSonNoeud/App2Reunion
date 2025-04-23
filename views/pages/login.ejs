@@ -3,6 +3,19 @@
 <div class="form-container">
     <link rel="stylesheet" href="/css/login.css">
     <h1>Connexion</h1>
+    
+    <% if (locals.redirectTo && redirectTo.includes('/respond')) { %>
+      <div class="alert alert-info">
+        <p>Vous devez vous connecter avec le compte qui a reçu l'invitation pour répondre à cette réunion.</p>
+      </div>
+    <% } %>
+    
+    <% if (locals.error) { %>
+      <div class="alert alert-danger">
+        <p><%= error %></p>
+      </div>
+    <% } %>
+    
     <form action="/auth/login" method="POST">
         <div class="form-group">
             <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>

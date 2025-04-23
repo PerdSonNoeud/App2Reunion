@@ -279,58 +279,92 @@ router.post('/guest/:token/respond', async (req, res) => {
   }
 })
 
-router.get('/:id/respond', isAuthenticated, async (req, res) => {
-  const meetingId = req.params.id
-  const userId = req.session.user.uid
+router.get('/:id/respond', async (req, res) => {
+  const meetingId = req.params.id;
+  
+  // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+  if (!req.session || !req.session.user) {
+    // Stocker l'URL de redirection dans la session
+    req.session = req.session || {};
+    req.session.redirectTo = `/meetings/${meetingId}/respond`;
+    return res.redirect('/auth/login');
+  }
+  
+  const userId = req.session.user.uid;
 
   try {
-    // Vérifier que l'utilisateur est participant
+    // D'abord, vérifier si l'utilisateur est l'organisateur de cette réunion
+    const organizerResult = await pool.query(
+      'SELECT uid FROM meetings WHERE mid = $1',
+      [meetingId]
+    );
+    
+    if (organizerResult.rows.length === 0) {
+      return res.status(404).render('pages/404', {
+        title: 'Réunion non trouvée',
+        user: req.session.user
+      });
+    }
+    
+    const organizerId = organizerResult.rows[0].uid;
+    
+    // Si l'utilisateur connecté est l'organisateur, l'informer qu'il ne peut pas répondre
+    if (userId === organizerId) {
+      return res.render('pages/error', {
+        title: 'Action non autorisée',
+        user: req.session.user,
+        message: "En tant qu'organisateur, vous ne pouvez pas répondre à votre propre réunion."
+      });
+    }
+    
+    // Ensuite, vérifier que l'utilisateur est bien un participant de cette réunion
     const participantResult = await pool.query(
       'SELECT * FROM participants WHERE mid = $1 AND uid = $2',
       [meetingId, userId]
-    )
+    );
 
     if (participantResult.rows.length === 0) {
-      return res.status(403).render('pages/error', {
+      // L'utilisateur est connecté mais n'est pas invité à cette réunion
+      return res.render('pages/error', {
         title: 'Accès refusé',
         user: req.session.user,
-        message: "Vous n'êtes pas autorisé à répondre à cette réunion"
-      })
+        message: "Vous n'êtes pas autorisé à répondre à cette réunion. Veuillez vous connecter avec le compte qui a été invité."
+      });
     }
 
     // Récupérer les infos de la réunion
     const meetingResult = await pool.query(
       'SELECT * FROM meetings WHERE mid = $1',
       [meetingId]
-    )
+    );
 
     if (meetingResult.rows.length === 0) {
       return res.status(404).render('pages/404', {
         title: 'Réunion non trouvée',
         user: req.session.user
-      })
+      });
     }
 
-    const meeting = meetingResult.rows[0]
+    const meeting = meetingResult.rows[0];
 
     // Récupérer les créneaux horaires
     const timeSlotsResult = await pool.query(
       'SELECT * FROM time_slots WHERE mid = $1 ORDER BY start_time',
       [meetingId]
-    )
+    );
 
-    const timeSlots = timeSlotsResult.rows
+    const timeSlots = timeSlotsResult.rows;
 
     // Récupérer les réponses existantes de l'utilisateur
     const userResponsesResult = await pool.query(
       'SELECT tid, availability FROM responses WHERE uid = $1 AND tid IN (SELECT tid FROM time_slots WHERE mid = $2)',
       [userId, meetingId]
-    )
+    );
 
-    const userResponses = {}
+    const userResponses = {};
     userResponsesResult.rows.forEach(row => {
-      userResponses[row.tid] = row.availability
-    })
+      userResponses[row.tid] = row.availability;
+    });
 
     res.render('meetings/respond', {
       title: 'Répondre à la réunion',
@@ -338,15 +372,15 @@ router.get('/:id/respond', isAuthenticated, async (req, res) => {
       meeting,
       timeSlots,
       userResponses
-    })
+    });
   } catch (error) {
     console.error(
       'Erreur lors de la récupération du formulaire de réponse',
       error
-    )
-    return res.status(500).send('Erreur serveur')
+    );
+    return res.status(500).send('Erreur serveur');
   }
-})
+});
 
 // Route pour enregistrer les réponses (utilisateur connecté)
 router.post('/:id/respond', isAuthenticated, async (req, res) => {

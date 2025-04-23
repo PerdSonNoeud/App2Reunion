@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+
+<div class="error-container">
+  <link rel="stylesheet" href="/css/error.css">
+  
+  <div class="error-content">
+    <h1><%= title %></h1>
+    
+    <% if (locals.message) { %>
+      <p class="error-message"><%= message %></p>
+    <% } else { %>
+      <p class="error-message">Une erreur s'est produite lors du traitement de votre demande.</p>
+    <% } %>
+    
+    <div class="action-buttons">
+      <a href="javascript:history.back()" class="btn-secondary">Retour</a>
+      <a href="/meetings" class="btn-primary">Mes réunions</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
