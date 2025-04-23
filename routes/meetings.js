@@ -63,68 +63,44 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-router.get('/', isAuthenticated, (req, res) => {
-  const userId = req.session.user.uid;
-  const valid = req.query.valid || null;
-  
-  pool.query(
-    'SELECT m.* FROM meetings m JOIN participants p ON m.mid = p.mid WHERE p.uid = $1 ORDER BY m.start_time DESC',
-    [userId],
-    (err, result) => {
-      if (err) {
-        console.error('Erreur lors de la récupération des réunions', err);
-        return res.status(500).send('Erreur serveur');
-      }
-      
-      res.render('meetings/all_meetings', { 
-        title: 'Mes réunions', 
-        user: req.session.user,
-        meetings: result.rows,
-        valid: valid
-      });
-    }
-  );
-});
-
-router.get('/:id', isAuthenticated, async (req, res) => {
-  const meetingId = req.params.id;
-  const userId = req.session.user.uid;
+router.get('/guest/:token', async (req, res) => {
+  const token = req.params.token;
   
   try {
     // Récupérer l'invité correspondant au token
     const guestResult = await pool.query(
       'SELECT gp.*, m.* FROM guest_participants gp JOIN meetings m ON gp.mid = m.mid WHERE gp.token = $1',
       [token]
-    )
+    );
 
     if (guestResult.rows.length === 0) {
       return res.status(404).render('pages/404', {
         title: 'Invitation non trouvée',
         user: null
-      })
+      });
     }
 
-    const guest = guestResult.rows[0]
-    const meetingId = guest.mid
+    const guest = guestResult.rows[0];
+    const meetingId = guest.mid;
 
     // Récupérer les créneaux horaires
     const timeSlotsResult = await pool.query(
       'SELECT * FROM time_slots WHERE mid = $1 ORDER BY start_time',
       [meetingId]
-    )
+    );
 
-    const timeSlots = timeSlotsResult.rows
+    const timeSlots = timeSlotsResult.rows;
 
     // Récupérer les réponses existantes de l'invité
     const guestResponsesResult = await pool.query(
       'SELECT tid, availability FROM guest_responses WHERE gid = $1',
       [guest.gid]
-    )
+    );
 
-    const guestResponses = {}
+    const guestResponses = {};
     guestResponsesResult.rows.forEach(row => {
-      guestResponses[row.tid] = row.availability
-    })
+      guestResponses[row.tid] = row.availability;
+    });
 
     res.render('meetings/respond_guest', {
       title: 'Répondre à la réunion',
@@ -133,15 +109,12 @@ router.get('/:id', isAuthenticated, async (req, res) => {
       timeSlots,
       guestResponses,
       token
-    })
+    });
   } catch (error) {
-    console.error(
-      'Erreur lors de la récupération du formulaire de réponse invité',
-      error
-    )
-    return res.status(500).send('Erreur serveur')
+    console.error('Erreur lors de la récupération du formulaire de réponse invité', error);
+    return res.status(500).send('Erreur serveur');
   }
-})
+});
 
 // Route pour enregistrer les réponses des invités
 router.post('/guest/:token/respond', async (req, res) => {
@@ -795,8 +768,9 @@ router.get('/:id', isAuthenticated, async (req, res) => {
 })
 
 router.get('/', isAuthenticated, (req, res) => {
-  const userId = req.session.user.uid
-
+  const userId = req.session.user.uid;
+  const valid = req.query.valid || null;
+  
   pool.query(
     `SELECT m.*, 
      CASE WHEN m.uid = $1 THEN 'organizer' ELSE p.status END as status
@@ -808,17 +782,18 @@ router.get('/', isAuthenticated, (req, res) => {
     [userId],
     (err, result) => {
       if (err) {
-        console.error('Erreur lors de la récupération des réunions', err)
-        return res.status(500).send('Erreur serveur')
+        console.error('Erreur lors de la récupération des réunions', err);
+        return res.status(500).send('Erreur serveur');
       }
-
-      res.render('meetings/all_meetings', {
-        title: 'Mes réunions',
+      
+      res.render('meetings/all_meetings', { 
+        title: 'Mes réunions', 
         user: req.session.user,
-        meetings: result.rows
-      })
+        meetings: result.rows,
+        valid: valid
+      });
     }
-  )
-})
+  );
+});
 
 module.exports = router;
