@@ -1,88 +1,156 @@
 <%- include('../partials/header') %>
 
-<div class="meeting-detail-container">
-    <link rel="stylesheet" href="/css/meeting_detail.css" type ="text/css">
-    
-    <div class="meeting-header">
-        <h1><%= meeting.title %></h1>
-        <div class="meeting-actions">
-            <% if (meeting.uid === user.uid) { %>
-                <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
-                <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
-                    <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
-                        Supprimer
-                    </button>
-                </form>
-            <% } %>
-        </div>
-    </div>
+    <div class="meeting-detail-container">
+        <link rel="stylesheet" href="/css/meeting_detail.css" type="text/css">
 
-    <div class="meeting-info">
-        <div class="info-section">
-            <h2>Détails</h2>
-            <div class="info-group">
-                <label>Description</label>
-                <p><%= meeting.description || 'Aucune description' %></p>
-            </div>
-            <div class="info-group">
-                <label>Organisateur</label>
-                <p> <%= organizer.name %></p>
-            </div>
-            <div class="info-group">
-                <label>Participants</label>
-                <ul class="participants-list">
-                    <% if (participants && participants.length > 0) { %>
-                        <% participants.forEach(participant => { %>
-                            <li><%= participant.name %> (<%= participant.email %>)</li>
-                        <% }) %>
-                    <% } else { %>
-                        <li>Aucun participant</li>
+        <div class="meeting-header">
+            <h1>
+                <%= meeting.title %>
+            </h1>
+            <div class="meeting-actions">
+                <% if (meeting.uid===user.uid) { %>
+                    <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
+                    <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
+                        <button type="submit" class="btn-delete"
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
+                            Supprimer
+                        </button>
+                    </form>
                     <% } %>
-                </ul>
             </div>
-            <div class="info-group">
-                <label>Lieu</label>
-                <div class="location-info">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
+        </div>
+
+        <div class="meeting-info">
+            <div class="info-section">
+                <h2>Détails</h2>
+                <div class="info-group">
+                    <label>Description</label>
+                    <p>
+                        <%= meeting.description || 'Aucune description' %>
+                    </p>
+                </div>
+                <div class="info-group">
+                    <label>Organisateur</label>
+                    <p>
+                        <%= organizer.name %>
+                    </p>
+                </div>
+                <div class="info-group">
+                    <label>Votre statut</label>
+                    <% if (meeting.uid===user.uid) { %>
+                        <div class="status-tag organizer">
+                            <i class="fas fa-crown"></i> Organisateur
+                        </div>
+                        <% } else { %>
+                            <% let participantStatus='pending' ; participants.forEach(participant=> {
+                                if (participant.uid === user.uid && participant.status) {
+                                participantStatus = participant.status;
+                                }
+                                });
+                                %>
+                                <% if (participantStatus==='confirmed' ) { %>
+                                    <div class="status-tag confirmed">
+                                        <i class="fas fa-check-circle"></i> Confirmé
+                                    </div>
+                                    <% } else if (participantStatus==='declined' ) { %>
+                                        <div class="status-tag declined">
+                                            <i class="fas fa-times-circle"></i> Décliné
+                                        </div>
+                                        <% } else { %>
+                                            <div class="status-tag pending">
+                                                <i class="fas fa-clock"></i> En attente de réponse
+                                            </div>
+                                            <% } %>
+                                                <% } %>
+                </div>
+                <div class="info-group">
+                    <label>Participants</label>
+                    <ul class="participants-list">
+                      <% if (participants && participants.length > 0) { %>
+                        <% participants.forEach(participant => { %>
+                          <li>
+                            <%= participant.name %> (<%= participant.email %>)
+                            <% if (participant.uid !== meeting.uid) { %>
+                              <% if (participant.status === 'confirmed') { %>
+                                <span class="status-tag confirmed">Confirmé</span>
+                              <% } else if (participant.status === 'declined') { %>
+                                <span class="status-tag declined">Décliné</span>
+                              <% } else { %>
+                                <span class="status-tag pending">En attente de réponse</span>
+                              <% } %>
+                            <% } %>
+                          </li>
+                        <% }) %>
+                      <% } %>
+                      
+                      <% if (guests && guests.length > 0) { %>
+                        <% guests.forEach(guest => { %>
+                          <li>
+                            <%= guest.name || guest.email %> (Invité)
+                            <% if (guest.status === 'confirmed') { %>
+                              <span class="status-tag confirmed">Confirmé</span>
+                            <% } else if (guest.status === 'declined') { %>
+                              <span class="status-tag declined">Décliné</span>
+                            <% } else { %>
+                              <span class="status-tag pending">En attente de réponse</span>
+                            <% } %>
+                          </li>
+                        <% }) %>
+                      <% } %>
+                      
+                      <% if ((!participants || participants.length === 0) && (!guests || guests.length === 0)) { %>
+                        <li>Aucun participant</li>
+                      <% } %>
+                    </ul>
+                  </div>
+                <div class="info-group">
+                    <label>Lieu</label>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>
+                            <%= meeting.location || 'Aucun lieu spécifié' %>
+                        </p>
+                    </div>
                 </div>
             </div>
+
+            <div class="info-section">
+                <h2>Horaires</h2>
+                <div class="info-group">
+                    <label>Début</label>
+                    <p>
+                        <%= new Date(meeting.start_time).toLocaleString('fr-FR', { dateStyle: 'full' ,
+                            timeStyle: 'short' }) %>
+                    </p>
+                </div>
+                <div class="info-group">
+                    <label>Fin</label>
+                    <p>
+                        <%= new Date(meeting.end_time).toLocaleString('fr-FR', { dateStyle: 'full' , timeStyle: 'short'
+                            }) %>
+                    </p>
+                </div>
+                <div class="info-group">
+                    <label>Durée</label>
+                    <p>
+                        <%= Math.round((new Date(meeting.end_time) - new Date(meeting.start_time)) / 1000 / 60) %>
+                            minutes
+                    </p>
+                </div>
+
+                <% if (meeting.uid===user.uid) { %>
+                    <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
+                        <button type="submit" class="btn-reminder">
+                            Envoyer un rappel aux participants sans réponse
+                        </button>
+                    </form>
+                    <% } %>
+            </div>
         </div>
 
-        <div class="info-section">
-            <h2>Horaires</h2>
-            <div class="info-group">
-                <label>Début</label>
-                <p><%= new Date(meeting.start_time).toLocaleString('fr-FR', { 
-                    dateStyle: 'full', 
-                    timeStyle: 'short' 
-                }) %></p>
-            </div>
-            <div class="info-group">
-                <label>Fin</label>
-                <p><%= new Date(meeting.end_time).toLocaleString('fr-FR', { 
-                    dateStyle: 'full', 
-                    timeStyle: 'short' 
-                }) %></p>
-            </div>
-            <div class="info-group">
-                <label>Durée</label>
-                <p><%= Math.round((new Date(meeting.end_time) - new Date(meeting.start_time)) / 1000 / 60) %> minutes</p>
-            </div>
-
-            <% if (meeting.uid === user.uid) { %>
-                <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
-                  <button type="submit" class="btn-reminder">
-                    Envoyer un rappel aux participants sans réponse
-                  </button>
-                </form>
-              <% } %>
+        <div class="back-link">
+            <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
         </div>
     </div>
 
-    <div class="back-link">
-        <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
-    </div>
-</div>
-
-<%- include('../partials/footer') %>
+    <%- include('../partials/footer') %>

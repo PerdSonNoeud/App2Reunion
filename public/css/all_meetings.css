@@ -131,3 +131,33 @@
         justify-content: center;
     }
 }
+
+.status-badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.status-badge.organizer {
+    background-color: #b19cd9;
+    color: white;
+}
+
+.status-badge.confirmed {
+    background-color: #77dd77;
+    color: white;
+}
+
+.status-badge.declined {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.status-badge.pending {
+    background-color: #ffd166;
+    color: #333;
+}
