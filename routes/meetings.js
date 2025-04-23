@@ -142,33 +142,79 @@ router.post('/guest/:token/respond', async (req, res) => {
     const guest = guestResult.rows[0]
     const meetingId = guest.mid
 
+    // Ajout pour débuguer
+    console.log("Réponses reçues:", responses);
+    console.log("Type de responses:", typeof responses);
+
     // Démarrer une transaction
     await pool.query('BEGIN')
 
-    let allUnavailable = true
+    let allUnavailable = true;
 
-    // Pour chaque réponse
-    for (const [timeSlotId, availability] of Object.entries(responses)) {
-      // Vérifier que le créneau appartient à cette réunion
-      const timeSlotResult = await pool.query(
-        'SELECT * FROM time_slots WHERE tid = $1 AND mid = $2',
-        [timeSlotId, meetingId]
-      )
+    // Récupérer tous les créneaux de cette réunion
+    const timeSlotsResult = await pool.query(
+      'SELECT * FROM time_slots WHERE mid = $1',
+      [meetingId]
+    );
+    
+    const timeSlots = timeSlotsResult.rows;
+    
+    // Cas où responses est un tableau au lieu d'un objet
+    if (Array.isArray(responses)) {
+      console.log("Format de réponse détecté: tableau");
+      
+      // Parcourir les créneaux et associer les réponses par position
+      for (let i = 0; i < timeSlots.length; i++) {
+        const timeSlot = timeSlots[i];
+        const availability = responses[i] || 'unavailable'; // Valeur par défaut si manquante
+        
+        console.log(`Créneau ${timeSlot.tid}, disponibilité: ${availability}`);
+        
+        // Insérer ou mettre à jour la réponse
+        await pool.query(
+          `INSERT INTO guest_responses (tid, gid, availability) 
+           VALUES ($1, $2, $3) 
+           ON CONFLICT (gid, tid) DO UPDATE SET availability = $3`,
+          [timeSlot.tid, guest.gid, availability]
+        );
+        
+        // Vérifier la disponibilité
+        if (availability === 'available' || availability === 'maybe') {
+          allUnavailable = false;
+          console.log("L'utilisateur est disponible pour au moins un créneau");
+        }
+      }
+    } else {
+      // Format d'origine (objet avec des clés pour chaque créneau)
+      for (const [timeSlotId, availability] of Object.entries(responses)) {
+        // Ajout pour débuguer
+        console.log(`Créneau ${timeSlotId}, disponibilité: ${availability}`);
+        
+        // Vérifier que le créneau appartient à cette réunion
+        const timeSlotResult = await pool.query(
+          'SELECT * FROM time_slots WHERE tid = $1 AND mid = $2',
+          [timeSlotId, meetingId]
+        )
 
-      if (timeSlotResult.rows.length === 0) continue
+        if (timeSlotResult.rows.length === 0) continue
 
-      // Insérer ou mettre à jour la réponse
-      await pool.query(
-        `INSERT INTO guest_responses (tid, gid, availability) 
-         VALUES ($1, $2, $3) 
-         ON CONFLICT (gid, tid) DO UPDATE SET availability = $3`,
-        [timeSlotId, guest.gid, availability]
-      )
+        // Insérer ou mettre à jour la réponse
+        await pool.query(
+          `INSERT INTO guest_responses (tid, gid, availability) 
+           VALUES ($1, $2, $3) 
+           ON CONFLICT (gid, tid) DO UPDATE SET availability = $3`,
+          [timeSlotId, guest.gid, availability]
+        )
 
-      if (availability === 'available' || availability === 'maybe') {
-        allUnavailable = false
+        // Vérifier la disponibilité
+        if (availability === 'available' || availability === 'maybe') {
+          allUnavailable = false;
+          console.log("L'utilisateur est disponible pour au moins un créneau");
+        }
       }
     }
+
+    console.log("Statut final - allUnavailable:", allUnavailable);
 
     if (allUnavailable) {
       await pool.query(
@@ -189,9 +235,7 @@ router.post('/guest/:token/respond', async (req, res) => {
         await notificationService.createNotification(
           organizerUid,
           meetingId,
-          `${guest.name || guest.email} a décliné tous les créneaux pour "${
-            meeting.title
-          }"`,
+          `${guest.name || guest.email} a décliné tous les créneaux pour "${meeting.title}"`,
           'decline'
         )
       }
@@ -200,6 +244,24 @@ router.post('/guest/:token/respond', async (req, res) => {
         'UPDATE guest_participants SET status = $1 WHERE gid = $2',
         ['confirmed', guest.gid]
       );
+      
+      // Ajouter une notification pour confirmer
+      const meetingResult = await pool.query(
+        'SELECT m.title, u.uid FROM meetings m JOIN users u ON m.uid = u.uid WHERE m.mid = $1',
+        [meetingId]
+      );
+
+      if (meetingResult.rows.length > 0) {
+        const meeting = meetingResult.rows[0]
+        const organizerUid = meeting.uid
+
+        await notificationService.createNotification(
+          organizerUid,
+          meetingId,
+          `${guest.name || guest.email} a confirmé sa disponibilité pour "${meeting.title}"`,
+          'confirm'
+        )
+      }
     }
 
     // Valider la transaction
