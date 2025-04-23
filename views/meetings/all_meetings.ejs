@@ -21,6 +21,7 @@
                         <th>Titre</th>
                         <th>Date</th>
                         <th>Heure</th>
+                        <th>Statut</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -30,6 +31,17 @@
                             <td><%= meeting.title %></td>
                             <td><%= new Date(meeting.start_time).toLocaleDateString() %></td>
                             <td><%= new Date(meeting.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+                            <td>
+                                <% if (meeting.uid === user.uid) { %>
+                                    <span class="status-badge organizer">Organisateur</span>
+                                <% } else if (meeting.status === 'confirmed') { %>
+                                    <span class="status-badge confirmed">Confirmé</span>
+                                <% } else if (meeting.status === 'declined') { %>
+                                    <span class="status-badge declined">Décliné</span>
+                                <% } else { %>
+                                    <span class="status-badge pending">En attente</span>
+                                <% } %>
+                            </td>
                             <td>
                                 <a href="/meetings/<%= meeting.mid %>" class="btn-detail">Détails</a>
                             </td>

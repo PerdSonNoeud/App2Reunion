@@ -187,3 +187,67 @@
       justify-content: center;
     }
   }
+
+/* Ajouter à la fin du fichier existant */
+
+.status-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.status-tag i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.status-tag.organizer {
+    background-color: #b19cd9;
+    color: white;
+}
+
+.status-tag.confirmed {
+    background-color: #77dd77;
+    color: white;
+}
+
+.status-tag.declined {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.status-tag.pending {
+    background-color: #ffd166;
+    color: #333;
+}
+
+.participants-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.participant-status {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.participant-status.confirmed {
+    background-color: rgba(119, 221, 119, 0.2);
+    color: #2a9d2a;
+}
+
+.participant-status.declined {
+    background-color: rgba(255, 107, 107, 0.2);
+    color: #d32f2f;
+}
+
+.participant-status.pending {
+    background-color: rgba(255, 209, 102, 0.2);
+    color: #ff8f00;
+}
