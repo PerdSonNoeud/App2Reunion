@@ -114,37 +114,42 @@
                 </div>
             </div>
 
-            <div class="info-section">
-                <h2>Horaires</h2>
-                <div class="info-group">
-                    <label>Début</label>
-                    <p>
-                        <%= new Date(meeting.start_time).toLocaleString('fr-FR', { dateStyle: 'full' ,
-                            timeStyle: 'short' }) %>
-                    </p>
-                </div>
-                <div class="info-group">
-                    <label>Fin</label>
-                    <p>
-                        <%= new Date(meeting.end_time).toLocaleString('fr-FR', { dateStyle: 'full' , timeStyle: 'short'
-                            }) %>
-                    </p>
-                </div>
-                <div class="info-group">
-                    <label>Durée</label>
-                    <p>
-                        <%= Math.round((new Date(meeting.end_time) - new Date(meeting.start_time)) / 1000 / 60) %>
-                            minutes
-                    </p>
+            <div class="info-section time-slots-section">
+                <h2><i class="far fa-calendar-alt"></i> Créneaux proposés</h2>
+                <div class="time-slots">
+                    <% if (timeSlots && timeSlots.length > 0) { %>
+                        <% timeSlots.forEach(slot => { %>
+                            <div class="time-slot-item">
+                                <div class="slot-content">
+                                    <div class="date">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+                                    </div>
+                                    <div class="time">
+                                        <i class="fas fa-clock"></i>
+                                        <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %> - 
+                                        <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="no-slots">
+                            <i class="fas fa-calendar-times"></i>
+                            <p>Aucun créneau disponible</p>
+                        </div>
+                    <% } %>
                 </div>
 
                 <% if (meeting.uid===user.uid) { %>
-                    <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
-                        <button type="submit" class="btn-reminder">
-                            Envoyer un rappel aux participants sans réponse
-                        </button>
-                    </form>
-                    <% } %>
+                    <div class="organizer-actions">
+                        <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
+                            <button type="submit" class="btn-reminder">
+                                <i class="fas fa-bell"></i> Envoyer un rappel aux participants
+                            </button>
+                        </form>
+                    </div>
+                <% } %>
             </div>
         </div>
 
