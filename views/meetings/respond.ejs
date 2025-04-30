@@ -1,21 +1,3 @@
-<!--
-  Formulaire de réponse pour les utilisateurs enregistrés
-  
-  Ce template permet aux utilisateurs connectés de répondre à une invitation
-  à une réunion en indiquant leur disponibilité pour chaque créneau proposé.
-  Les utilisateurs peuvent choisir parmi trois options: disponible, peut-être,
-  ou indisponible.
-  
-  @template views/meetings/respond
-  @requires partials/header
-  @requires partials/footer
-  @requires css/index.css
-  @param {Object} meeting - Informations sur la réunion
-  @param {Array} timeSlots - Liste des créneaux horaires proposés
-  @param {Object} userResponses - Réponses précédentes de l'utilisateur (si existantes)
-  @param {Object} user - Informations sur l'utilisateur connecté
--->
-
 <%- include('../partials/header') %>
 
 <div class="respond-container">
@@ -23,7 +5,6 @@
   
   <h1>Répondre à la réunion</h1>
   
-  <!-- Informations sur la réunion -->
   <div class="meeting-info">
     <h2><%= meeting.title %></h2>
     <% if (meeting.description) { %>
@@ -31,19 +12,15 @@
     <% } %>
   </div>
   
-  <!-- Formulaire de réponse aux créneaux horaires -->
   <form action="/meetings/<%= meeting.mid %>/respond" method="POST">
     <div class="time-slots">
       <h3>Veuillez indiquer vos disponibilités</h3>
       
-      <!-- Message si aucun créneau n'est proposé -->
       <% if (timeSlots.length === 0) { %>
         <p class="no-slots">Aucun créneau n'a été proposé pour cette réunion.</p>
       <% } else { %>
-        <!-- Affichage de chaque créneau avec options de réponse -->
         <% timeSlots.forEach(slot => { %>
           <div class="time-slot">
-            <!-- Affichage des informations du créneau (date et heures) -->
             <div class="slot-info">
               <div class="slot-date">
                 <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
@@ -54,23 +31,19 @@
               </div>
             </div>
             
-            <!-- Options de réponse (disponible, peut-être, indisponible) -->
             <div class="slot-responses">
-              <!-- Option "Disponible" -->
               <div class="response-option">
                 <input type="radio" name="responses[<%= slot.tid %>]" id="available-<%= slot.tid %>" value="available" 
                   <%= userResponses[slot.tid] === 'available' ? 'checked' : '' %>>
                 <label for="available-<%= slot.tid %>" class="available">Disponible</label>
               </div>
               
-              <!-- Option "Peut-être" -->
               <div class="response-option">
                 <input type="radio" name="responses[<%= slot.tid %>]" id="maybe-<%= slot.tid %>" value="maybe"
                   <%= userResponses[slot.tid] === 'maybe' ? 'checked' : '' %>>
                 <label for="maybe-<%= slot.tid %>" class="maybe">Peut-être</label>
               </div>
               
-              <!-- Option "Indisponible" -->
               <div class="response-option">
                 <input type="radio" name="responses[<%= slot.tid %>]" id="unavailable-<%= slot.tid %>" value="unavailable"
                   <%= userResponses[slot.tid] === 'unavailable' ? 'checked' : '' %>>
@@ -82,7 +55,6 @@
       <% } %>
     </div>
     
-    <!-- Boutons d'action (enregistrement ou annulation) -->
     <div class="form-actions">
       <button type="submit" class="btn-primary">Enregistrer mes réponses</button>
       <a href="/meetings/<%= meeting.mid %>" class="btn-secondary">Annuler</a>

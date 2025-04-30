@@ -1,24 +1,8 @@
-/**
- * Gestion de la création de nouvelles réunions
- * 
- * Ce module gère les routes pour afficher le formulaire de création
- * de réunions et traiter les soumissions de nouvelles réunions.
- * 
- * @module routes/new_meeting
- */
-
 const express = require('express');
 const { pool } = require('../config/db');
 const router = express.Router();
 const notificationService = require('./notificationService');
 
-/**
- * Middleware pour vérifier si l'utilisateur est authentifié
- * 
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- * @param {Function} next - Fonction pour passer au middleware suivant
- */
 const isAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
     next();
@@ -27,27 +11,10 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-/**
- * Affiche le formulaire de création d'une nouvelle réunion
- * 
- * @route GET /new
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- */
 router.get('/', isAuthenticated, (req, res) => {
   res.render('meetings/new', { title: 'Nouvelle réunion', user: req.session.user });
 });
 
-/**
- * Traite la création d'une nouvelle réunion
- * 
- * Crée la réunion, les créneaux horaires et invite les participants
- * spécifiés dans le formulaire.
- * 
- * @route POST /new
- * @param {Request} req - Requête Express avec données du formulaire
- * @param {Response} res - Réponse Express
- */
 router.post('/', isAuthenticated, async (req, res) => {
   const { title, description, location, startTime, endTime, participantEmail, participantName } = req.body;
   const userId = req.session.user.uid;

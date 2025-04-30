@@ -1,12 +1,3 @@
-/**
- * Gestion de l'importation de réunions depuis un fichier iCalendar
- * 
- * Ce module permet aux utilisateurs d'importer des réunions depuis un fichier
- * au format iCalendar (.ics) pour les ajouter à leur calendrier de réunions.
- * 
- * @module routes/import_meeting
- */
-
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const ical = require("node-ical");
@@ -16,13 +7,6 @@ const router = express.Router();
 // Option par défaut pour express-fileupload
 router.use(fileUpload());
 
-/**
- * Affiche le formulaire d'importation de réunions
- * 
- * @route GET /import
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- */
 router.get("/", async (req, res) => {
   res.render("meetings/import_meeting", {
     title: "Import Meeting",
@@ -30,17 +14,6 @@ router.get("/", async (req, res) => {
   });
 });
 
-/**
- * Traite l'importation d'un fichier iCalendar
- * 
- * Analyse le fichier .ics téléchargé, extrait les événements et les enregistre
- * dans la base de données comme des réunions. L'utilisateur courant est
- * automatiquement ajouté comme participant.
- * 
- * @route POST /import
- * @param {Request} req - Requête Express avec le fichier téléchargé
- * @param {Response} res - Réponse Express
- */
 router.post("/", async (req, res) => {
   let data = null;
   let string = "Fichier importé avec succès.";

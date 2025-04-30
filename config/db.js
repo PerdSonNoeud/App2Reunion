@@ -1,29 +1,15 @@
-/**
- * Configuration de la connexion à la base de données PostgreSQL
- * 
- * Ce module configure et exporte une instance de Pool PostgreSQL qui gère
- * les connexions à la base de données utilisée par l'application.
- * 
- * @module config/db
- */
-
 const { Pool } = require('pg');
 
-/**
- * Instance de Pool PostgreSQL configurée avec les paramètres de connexion
- * Les paramètres sont récupérés depuis les variables d'environnement avec des valeurs par défaut
- * 
- * @type {Pool}
- */
+// Configuration de la connexion à la base de données PostgreSQL
 const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',     // Hôte de la base de données
-    database: process.env.DB_NAME || 'reunion',   // Nom de la base de données
-    user: process.env.DB_USER || 'admin',         // Nom d'utilisateur
-    password: process.env.DB_PASSWORD || 'admin', // Mot de passe
-    port: process.env.DB_PORT || 5432,            // Port de connexion
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'reunion',
+    user: process.env.DB_USER || 'admin',
+    password: process.env.DB_PASSWORD || 'admin',
+    port: process.env.DB_PORT || 5432,
 });
 
-// Vérification de la connexion à la base de données au démarrage
+// Vérification de la connexion à la base de données
 pool.connect((err) => {
     if (err) {
         console.error('Erreur de connexion à la base de données', err.stack);

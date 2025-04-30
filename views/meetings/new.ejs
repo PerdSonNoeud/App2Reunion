@@ -1,32 +1,10 @@
-<!--
-  Formulaire de création d'une nouvelle réunion
-  
-  Ce template permet aux utilisateurs de créer une nouvelle réunion
-  avec les informations suivantes:
-  - Titre et description
-  - Lieu (optionnel)
-  - Plusieurs créneaux horaires proposés
-  - Liste des participants à inviter
-  
-  Les champs dynamiques (créneaux horaires et participants) peuvent être ajoutés
-  via JavaScript (voir public/js/main.js).
-  
-  @template views/meetings/new
-  @requires partials/header
-  @requires partials/footer
-  @requires css/form.css
--->
-
 <%- include('../partials/header') %>
 
 <div class="form-container meeting-form">
-    <!-- Inclusion de la feuille de style spécifique aux formulaires -->
     <link rel="stylesheet" href="/css/form.css">
     <h1>Créer une nouvelle réunion</h1>
     
-    <!-- Formulaire principal avec POST vers /new_meeting -->
     <form id="createMeetingForm" action="/new_meeting" method="POST">
-        <!-- Informations générales de la réunion -->
         <div class="form-group">
             <label for="title">Titre de la réunion</label>
             <input type="text" id="title" name="title" class="form-control" required>
@@ -42,10 +20,8 @@
             <input type="text" id="location" name="location" class="form-control">
         </div>
         
-        <!-- Section des créneaux horaires proposés -->
         <h2>Créneaux horaires</h2>
         <div id="timeSlots">
-            <!-- Premier créneau horaire (obligatoire) -->
             <div class="time-slot">
                 <div class="form-group">
                     <label>Date et heure de début</label>
@@ -58,13 +34,10 @@
             </div>
         </div>
         
-        <!-- Bouton pour ajouter dynamiquement d'autres créneaux -->
         <button type="button" id="addTimeSlot" class="btn-secondary">+ Ajouter un créneau</button>
         
-        <!-- Section des participants à inviter -->
         <h2>Participants</h2>
         <div id="participants">
-            <!-- Premier participant (obligatoire) -->
             <div class="participant">
                 <div class="form-group">
                     <label>Email du participant</label>
@@ -73,10 +46,8 @@
             </div>
         </div>
         
-        <!-- Bouton pour ajouter dynamiquement d'autres participants -->
         <button type="button" id="addParticipant" class="btn-secondary">+ Ajouter un participant</button>
         
-        <!-- Bouton de soumission du formulaire -->
         <div class="form-group mt-4">
             <button type="submit" class="btn">Créer la réunion</button>
         </div>

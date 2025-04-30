@@ -1,37 +1,15 @@
-/**
- * Configuration du service d'email pour l'application
- * 
- * Ce module configure un transporteur Nodemailer et fournit des templates d'emails
- * ainsi qu'une fonction pour envoyer des emails aux utilisateurs.
- * 
- * @module config/nodemailer
- */
-
 const nodemailer = require('nodemailer');
 
-/**
- * Transporteur Nodemailer configuré pour l'envoi d'emails
- * Les paramètres d'authentification sont récupérés depuis les variables d'environnement
- * 
- * @type {nodemailer.Transporter}
- */
+// configurer le transporteur Nodemailer
 const tranport = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || 'gmail',  
   auth: {
-      user: process.env.EMAIL_USER,      // Adresse email de l'expéditeur
-      pass: process.env.EMAIL_PASSWORD   // Mot de passe ou token d'application
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
   }
 });
 
-/**
- * Génère un template HTML pour l'invitation d'un utilisateur enregistré
- * 
- * @param {Object} meeting - Informations sur la réunion (titre, description)
- * @param {Array} timeSlots - Liste des créneaux horaires proposés
- * @param {string} responseUrl - URL pour répondre à l'invitation
- * @param {string} userEmail - Email de l'utilisateur invité
- * @returns {string} Template HTML formaté
- */
+// pour gen un lien unique pour chaque utilisateur
 const inviteRegisteredUserTemplate = (meeting, timeSlots, responseUrl, userEmail) => {
   const timeSlotsHtml = timeSlots.map(slot => {
       return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -59,14 +37,7 @@ const inviteRegisteredUserTemplate = (meeting, timeSlots, responseUrl, userEmail
   `;
 };
 
-/**
- * Génère un template HTML pour l'invitation d'un invité sans compte
- * 
- * @param {Object} meeting - Informations sur la réunion (titre, description)
- * @param {Array} timeSlots - Liste des créneaux horaires proposés
- * @param {string} responseUrl - URL pour répondre à l'invitation
- * @returns {string} Template HTML formaté
- */
+// pour les invités sans compte
 const inviteGuest = (meeting, timeSlots, responseUrl) => {
   const timeSlotsHtml = timeSlots.map(slot => {
       return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -90,14 +61,7 @@ const inviteGuest = (meeting, timeSlots, responseUrl) => {
 `;
 };
 
-/**
- * Génère un template HTML pour un rappel à répondre à l'invitation
- * 
- * @param {Object} meeting - Informations sur la réunion (titre, description)
- * @param {Array} timeSlots - Liste des créneaux horaires proposés
- * @param {string} responseUrl - URL pour répondre à l'invitation
- * @returns {string} Template HTML formaté
- */
+// notif pour reppeler l'invité de répondre à l'invitation
 const reminderTemplate = (meeting, timeSlots, responseUrl) => {
   const timeSlotsHtml = timeSlots.map(slot => {
       return `<li>${new Date(slot.start_time).toLocaleString('fr-FR')} - ${new Date(slot.end_time).toLocaleString('fr-FR')}</li>`;
@@ -121,15 +85,8 @@ const reminderTemplate = (meeting, timeSlots, responseUrl) => {
   `;
 };
 
-/**
- * Envoie un email avec les paramètres spécifiés
- * 
- * @async
- * @param {string} to - Adresse email du destinataire
- * @param {string} subject - Sujet de l'email
- * @param {string} html - Contenu HTML de l'email
- * @returns {Promise<void>}
- */
+
+// fonction pour envoyer l'email
 const sendEmail = async (to, subject, html) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,

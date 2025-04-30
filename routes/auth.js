@@ -1,27 +1,9 @@
-/**
- * Gestion de l'authentification des utilisateurs
- * 
- * Ce module gère l'ensemble des routes liées à l'authentification:
- * connexion, inscription et déconnexion des utilisateurs.
- * 
- * @module routes/auth
- */
-
 const express = require('express');
 const { pool } = require('../config/db');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 
-/**
- * Affiche la page de connexion
- * 
- * Si l'utilisateur est déjà connecté, il est redirigé vers la page appropriée.
- * Conserve les informations de redirection pour après la connexion si nécessaire.
- * 
- * @route GET /auth/login
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- */
+// Middleware pour vérifier si l'utilisateur est authentifié
 router.get('/login', (req, res) => {
   
   // Si l'utilisateur est déjà connecté et tente d'accéder à la page de connexion
@@ -43,27 +25,12 @@ router.get('/login', (req, res) => {
   });
 });
 
-/**
- * Affiche la page d'inscription
- * 
- * @route GET /auth/register
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- */
+// GET /auth/register
 router.get('/register', (req, res) => {
   res.render('pages/register', { title: 'Inscription', user: null });
 });
 
-/**
- * Traite les demandes de connexion
- * 
- * Vérifie les identifiants de l'utilisateur et crée une session si valides.
- * Redirige vers la page de destination après connexion réussie.
- * 
- * @route POST /auth/login
- * @param {Request} req - Requête Express contenant email et password
- * @param {Response} res - Réponse Express
- */
+// POST /auth/login
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -108,16 +75,7 @@ router.post('/login', (req, res) => {
   });
 });
 
-/**
- * Traite les demandes d'inscription
- * 
- * Vérifie si l'email n'est pas déjà utilisé et si les mots de passe correspondent.
- * Enregistre le nouvel utilisateur dans la base de données avec mot de passe hashé.
- * 
- * @route POST /auth/register
- * @param {Request} req - Requête Express contenant informations d'inscription
- * @param {Response} res - Réponse Express
- */
+// POST /auth/register
 router.post('/register', (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
@@ -164,13 +122,7 @@ router.post('/register', (req, res) => {
   });
 });
 
-/**
- * Déconnecte l'utilisateur en détruisant sa session
- * 
- * @route GET /auth/logout
- * @param {Request} req - Requête Express
- * @param {Response} res - Réponse Express
- */
+// POST /auth/logout
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');

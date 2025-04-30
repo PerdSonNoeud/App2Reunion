@@ -1,49 +1,13 @@
-<!--
-  Page d'accueil de l'application
-  
-  Ce template affiche la page d'accueil principale de l'application.
-  Il présente un message de bienvenue et des liens rapides vers les fonctionnalités
-  principales (création et consultation des réunions).
-  
-  @template views/pages/index
-  @requires partials/header
-  @requires partials/footer
-  @requires css/index.css
-  @param {Object} user - Informations sur l'utilisateur connecté
--->
-
 <%- include('../partials/header') %>
 
 <div class="index">
     <link rel="stylesheet" href="/css/index.css" type="text/css">
-    
-    <!-- Message de bienvenue et présentation de l'application -->
     <h1>Bienvenue sur l'App de Réunion</h1>
     <p>Créez et gérez vos réunions facilement.</p>
     
-    <!-- Liens d'action rapide vers les fonctionnalités principales -->
     <div class="btn-container">
         <a href="/new_meeting" class="btn">Créer une réunion</a>
         <a href="/meetings" class="btn">Voir les réunions</a>
-    </div>
-    
-    <!-- Section de présentation des fonctionnalités -->
-    <div class="features">
-        <div class="feature-item">
-            <i class="fas fa-calendar-plus"></i>
-            <h3>Créez des réunions</h3>
-            <p>Proposez plusieurs créneaux horaires et laissez vos participants choisir.</p>
-        </div>
-        <div class="feature-item">
-            <i class="fas fa-users"></i>
-            <h3>Invitez des participants</h3>
-            <p>Invitez des utilisateurs avec ou sans compte facilement par email.</p>
-        </div>
-        <div class="feature-item">
-            <i class="fas fa-check-circle"></i>
-            <h3>Suivez les réponses</h3>
-            <p>Visualisez les disponibilités de tous vos participants en un coup d'œil.</p>
-        </div>
     </div>
 </div>
 

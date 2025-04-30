@@ -1,34 +1,9 @@
-/**
- * Service de gestion des notifications
- * 
- * Ce module fournit des fonctions pour créer, gérer et envoyer des notifications
- * aux utilisateurs concernant les réunions et les invitations.
- * 
- * @module routes/notificationService
- */
-
 const { pool } = require('../config/db');
 const { sendEmail, inviteRegisteredUserTemplate, inviteGuest, reminderTemplate } = require('../config/nodemailer');
 const crypto = require('crypto');
 
-/**
- * Service de notifications avec diverses fonctionnalités
- * pour gérer les notifications et invitations
- * 
- * @namespace notificationService
- */
 const notificationService = {
-  /**
-   * Crée une notification pour un utilisateur
-   * 
-   * @async
-   * @function createNotification
-   * @param {number} uid - ID de l'utilisateur destinataire
-   * @param {number} mid - ID de la réunion concernée
-   * @param {string} message - Contenu du message de notification
-   * @param {string} type - Type de notification (invitation, reminder, confirm, decline, etc.)
-   * @returns {Promise<Object>} - La notification créée
-   */
+  // Créer une notification
   createNotification: async (uid, mid, message, type) => {
     try {
       const result = await pool.query(
@@ -42,15 +17,7 @@ const notificationService = {
     }
   },
 
-  /**
-   * Marque une notification comme lue
-   * 
-   * @async
-   * @function markAsRead
-   * @param {number} nid - ID de la notification
-   * @param {number} uid - ID de l'utilisateur propriétaire
-   * @returns {Promise<boolean>} - Succès de l'opération
-   */
+  // Marquer une notification comme lue
   markAsRead: async (nid, uid) => {
     try {
       await pool.query(
@@ -64,14 +31,7 @@ const notificationService = {
     }
   },
 
-  /**
-   * Récupère les notifications non lues d'un utilisateur
-   * 
-   * @async
-   * @function getUnreadNotifications
-   * @param {number} uid - ID de l'utilisateur
-   * @returns {Promise<Array>} - Liste des notifications non lues
-   */
+  // Obtenir les notifications non lues d'un utilisateur
   getUnreadNotifications: async (uid) => {
     try {
       const result = await pool.query(
@@ -85,16 +45,7 @@ const notificationService = {
     }
   },
 
-  /**
-   * Invite un utilisateur enregistré à une réunion
-   * 
-   * @async
-   * @function inviteRegisteredUser
-   * @param {number} meetingId - ID de la réunion
-   * @param {string} userEmail - Email de l'utilisateur à inviter
-   * @param {string} organizerName - Nom de l'organisateur
-   * @returns {Promise<Object>} - Résultat de l'opération
-   */
+  // Inviter un utilisateur enregistré
   inviteRegisteredUser: async (meetingId, userEmail, organizerName) => {
     try {
       // Vérifier si l'utilisateur existe
@@ -145,7 +96,7 @@ const notificationService = {
 
       // Envoyer un email
       const responseUrl = `${process.env.BASE_URL}/meetings/${meetingId}/respond`;
-      const emailContent = inviteRegisteredUserTemplate(meeting, timeSlots, responseUrl, userEmail);
+      const emailContent = inviteRegisteredUserTemplate(meeting, timeSlots, responseUrl);
       
       await sendEmail(
         userEmail,
@@ -160,17 +111,7 @@ const notificationService = {
     }
   },
 
-  /**
-   * Invite un utilisateur non-enregistré (invité) à une réunion
-   * 
-   * @async
-   * @function inviteGuestUser
-   * @param {number} meetingId - ID de la réunion
-   * @param {string} guestEmail - Email de l'invité
-   * @param {string} guestName - Nom de l'invité (optionnel)
-   * @param {string} organizerName - Nom de l'organisateur
-   * @returns {Promise<Object>} - Résultat de l'opération
-   */
+  // Inviter un utilisateur non enregistré (guest)
   inviteGuestUser: async (meetingId, guestEmail, guestName, organizerName) => {
     try {
       // Récupérer les infos de la réunion
@@ -236,16 +177,7 @@ const notificationService = {
     }
   },
 
-  /**
-   * Envoie un rappel à un utilisateur qui n'a pas répondu
-   * 
-   * @async
-   * @function sendReminder
-   * @param {number} meetingId - ID de la réunion
-   * @param {string} userEmail - Email de l'utilisateur
-   * @param {boolean} isGuest - Indique si l'utilisateur est un invité sans compte
-   * @returns {Promise<Object>} - Résultat de l'opération
-   */
+  // Envoyer un rappel à un utilisateur qui n'a pas répondu
   sendReminder: async (meetingId, userEmail, isGuest = false) => {
     try {
       // Récupérer les infos de la réunion
@@ -308,7 +240,7 @@ const notificationService = {
       }
 
       // Envoyer un email
-      const emailContent = reminderTemplate(meeting, timeSlots, responseUrl, userEmail);
+      const emailContent = inviteRegisteredUserTemplate(meeting, timeSlots, responseUrl, userEmail);
       
       await sendEmail(
         userEmail,
