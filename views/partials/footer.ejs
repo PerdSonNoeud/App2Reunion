@@ -1,10 +1,30 @@
+<!--
+  Pied de page partagé de l'application
+  
+  Ce partial contient le pied de page commun à toutes les pages de l'application,
+  incluant les informations de copyright, les liens vers les scripts JavaScript
+  et la fermeture des balises principales ouvertes dans le header.
+  
+  @partial views/partials/footer
+  @requires Bootstrap 5.3.3 JavaScript
+  @requires /js/main.js
+  @uses La variable de session pour l'année en cours
+-->
 </main>
+
+<!-- Pied de page du site -->
 <footer class="site-footer">
     <div class="container">
+        <!-- Texte de copyright avec l'année courante -->
         <p class="footer-text">&copy; <%= new Date().getFullYear() %> - Application de Gestion de Réunions</p>
     </div>
 </footer>
+
+<!-- Chargement des scripts JavaScript -->
+<!-- Bootstrap Bundle avec Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Script principal de l'application -->
 <script src="/js/main.js" defer></script>
 </body>
+
 </html>

@@ -1,25 +1,44 @@
+<!--
+  Page de confirmation après soumission d'une réponse
+  
+  Ce template affiche un message de confirmation après qu'un utilisateur
+  ou un invité a soumis ses réponses concernant sa disponibilité pour
+  les créneaux d'une réunion.
+  
+  @template views/meetings/response_success
+  @requires css/styles.css
+-->
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réponse Enregistrée</title>
+    <!-- Styles CSS globaux -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <!-- Conteneur principal avec message de confirmation -->
     <div class="container success-container">
         <div class="success-message">
+            <!-- Message de confirmation -->
             <h1>Réponse enregistrée avec succès!</h1>
             <p>Votre réponse à l'invitation a été correctement enregistrée.</p>
+            
+            <!-- Icône de confirmation -->
             <div class="success-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
+            
+            <!-- Lien de retour à l'accueil -->
             <div class="actions">
                 <a href="/" class="btn btn-primary">Retour à l'accueil</a>
             </div>
         </div>
     </div>
 
+    <!-- Chargement des icônes Font Awesome -->
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </body>
 </html>

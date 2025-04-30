@@ -1,9 +1,35 @@
+<!--
+  Formulaire d'inscription
+  
+  Ce template affiche un formulaire permettant aux nouveaux utilisateurs de créer
+  un compte dans l'application. Il collecte les informations suivantes:
+  - Prénom et nom
+  - Adresse email (qui servira d'identifiant)
+  - Mot de passe avec confirmation
+  
+  @template views/pages/register
+  @requires partials/header
+  @requires partials/footer
+  @requires css/register.css
+  @param {string} error - Message d'erreur à afficher (optionnel)
+-->
+
 <%- include('../partials/header') %>
 
 <div class="form-container">
     <link rel="stylesheet" href="/css/register.css">
     <h1>Inscription</h1>
+    
+    <!-- Affichage des erreurs éventuelles (email déjà utilisé, mots de passe non concordants, etc.) -->
+    <% if (locals.error) { %>
+        <div class="alert alert-danger">
+            <p><%= error %></p>
+        </div>
+    <% } %>
+    
+    <!-- Formulaire d'inscription avec validation côté client et côté serveur -->
     <form action="/auth/register" method="POST">
+        <!-- Prénom et nom sur la même ligne -->
         <div class="form-row">
             <div class="form-group">
                 <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Prénom" required>
@@ -12,9 +38,13 @@
                 <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Nom" required>
             </div>
         </div>
+        
+        <!-- Email (identifiant unique) -->
         <div class="form-group">
             <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
         </div>
+        
+        <!-- Mot de passe et confirmation sur la même ligne -->
         <div class="form-row">
             <div class="form-group">
                 <input type="password" name="password" id="password" class="form-control" placeholder="Mot de passe" required>
@@ -24,9 +54,13 @@
                        placeholder="Confirmer mot de passe" required>
             </div>
         </div>
+        
+        <!-- Bouton de soumission -->
         <button type="submit" class="btn">S'inscrire</button>
     </form>
 </div>
+
+<!-- Lien vers la page de connexion pour les utilisateurs déjà inscrits -->
 <p class="mt-3">Déjà un compte ? <a href="/auth/login">Connectez-vous</a></p>
 
 <%- include('../partials/footer') %>

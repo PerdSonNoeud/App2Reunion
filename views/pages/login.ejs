@@ -1,31 +1,57 @@
+<!--
+  Formulaire de connexion
+  
+  Ce template affiche un formulaire permettant aux utilisateurs de se connecter
+  à leur compte. Il peut également afficher des messages contextuels, comme 
+  lorsqu'un utilisateur est redirigé vers la connexion après avoir tenté 
+  d'accéder à une page protégée.
+  
+  @template views/pages/login
+  @requires partials/header
+  @requires partials/footer
+  @requires css/login.css
+  @param {string} error - Message d'erreur à afficher (optionnel)
+  @param {string} redirectTo - URL de redirection après connexion réussie (optionnel)
+-->
+
 <%- include('../partials/header') %>
 
 <div class="form-container">
     <link rel="stylesheet" href="/css/login.css">
     <h1>Connexion</h1>
     
+    <!-- Message contextuel pour les réponses aux réunions nécessitant une connexion -->
     <% if (locals.redirectTo && redirectTo.includes('/respond')) { %>
       <div class="alert alert-info">
         <p>Vous devez vous connecter avec le compte qui a reçu l'invitation pour répondre à cette réunion.</p>
       </div>
     <% } %>
     
+    <!-- Affichage des erreurs éventuelles (identifiants invalides, etc.) -->
     <% if (locals.error) { %>
       <div class="alert alert-danger">
         <p><%= error %></p>
       </div>
     <% } %>
     
+    <!-- Formulaire de connexion -->
     <form action="/auth/login" method="POST">
+        <!-- Email (identifiant) -->
         <div class="form-group">
             <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
         </div>
+        
+        <!-- Mot de passe -->
         <div class="form-group">
             <input type="password" name="password" id="password" class="form-control" placeholder="Mot de passe" required>
         </div>
+        
+        <!-- Bouton de connexion -->
         <button type="submit" class="btn">Se connecter</button>
     </form>
 </div>
+
+<!-- Lien vers la page d'inscription pour les nouveaux utilisateurs -->
 <p class="mt-3">Pas encore de compte ? <a href="/auth/register">Inscrivez-vous</a></p>
 
 <%- include('../partials/footer') %>
