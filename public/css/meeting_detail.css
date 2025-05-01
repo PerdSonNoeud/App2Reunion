@@ -188,8 +188,6 @@
     }
   }
 
-/* Ajouter à la fin du fichier existant */
-
 .status-tag {
     display: inline-flex;
     align-items: center;
@@ -250,4 +248,13 @@
 .participant-status.pending {
     background-color: rgba(255, 209, 102, 0.2);
     color: #ff8f00;
+}
+
+.btn-confirm-slot {
+    background-color: #77dd77;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
 }

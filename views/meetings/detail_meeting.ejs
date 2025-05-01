@@ -42,7 +42,7 @@
                             Supprimer
                         </button>
                     </form>
-                <% } %>
+                    <% } %>
             </div>
         </div>
 
@@ -71,69 +71,72 @@
                         <div class="status-tag organizer">
                             <i class="fas fa-crown"></i> Organisateur
                         </div>
-                    <% } else { %>
-                        <% let participantStatus='pending' ; participants.forEach(participant=> {
-                            if (participant.uid === user.uid && participant.status) {
-                                participantStatus = participant.status;
-                            }
-                        }); %>
-                        <% if (participantStatus==='confirmed' ) { %>
-                            <div class="status-tag confirmed">
-                                <i class="fas fa-check-circle"></i> Confirmé
-                            </div>
-                        <% } else if (participantStatus==='declined' ) { %>
-                            <div class="status-tag declined">
-                                <i class="fas fa-times-circle"></i> Décliné
-                            </div>
                         <% } else { %>
-                            <div class="status-tag pending">
-                                <i class="fas fa-clock"></i> En attente de réponse
-                            </div>
-                        <% } %>
-                    <% } %>
+                            <% let participantStatus='pending' ; participants.forEach(participant=> {
+                                if (participant.uid === user.uid && participant.status) {
+                                participantStatus = participant.status;
+                                }
+                                }); %>
+                                <% if (participantStatus==='confirmed' ) { %>
+                                    <div class="status-tag confirmed">
+                                        <i class="fas fa-check-circle"></i> Confirmé
+                                    </div>
+                                    <% } else if (participantStatus==='declined' ) { %>
+                                        <div class="status-tag declined">
+                                            <i class="fas fa-times-circle"></i> Décliné
+                                        </div>
+                                        <% } else { %>
+                                            <div class="status-tag pending">
+                                                <i class="fas fa-clock"></i> En attente de réponse
+                                            </div>
+                                            <% } %>
+                                                <% } %>
                 </div>
                 <!-- Liste des participants avec leur statut -->
                 <div class="info-group">
                     <label>Participants</label>
                     <ul class="participants-list">
-                      <!-- Participants avec compte -->
-                      <% if (participants && participants.length > 0) { %>
-                        <% participants.forEach(participant => { %>
-                          <li>
-                            <%= participant.name %> (<%= participant.email %>)
-                            <% if (participant.uid !== meeting.uid) { %>
-                              <% if (participant.status === 'confirmed') { %>
-                                <span class="status-tag confirmed">Confirmé</span>
-                              <% } else if (participant.status === 'declined') { %>
-                                <span class="status-tag declined">Décliné</span>
-                              <% } else { %>
-                                <span class="status-tag pending">En attente de réponse</span>
-                              <% } %>
-                            <% } %>
-                          </li>
-                        <% }) %>
-                      <% } %>
-                      
-                      <!-- Participants invités sans compte -->
-                      <% if (guests && guests.length > 0) { %>
-                        <% guests.forEach(guest => { %>
-                          <li>
-                            <%= guest.name || guest.email %> (Invité)
-                            <% if (guest.status === 'confirmed') { %>
-                              <span class="status-tag confirmed">Confirmé</span>
-                            <% } else if (guest.status === 'declined') { %>
-                              <span class="status-tag declined">Décliné</span>
-                            <% } else { %>
-                              <span class="status-tag pending">En attente de réponse</span>
-                            <% } %>
-                          </li>
-                        <% }) %>
-                      <% } %>
-                      
-                      <!-- Message si aucun participant -->
-                      <% if ((!participants || participants.length === 0) && (!guests || guests.length === 0)) { %>
-                        <li>Aucun participant</li>
-                      <% } %>
+                        <!-- Participants avec compte -->
+                        <% if (participants && participants.length> 0) { %>
+                            <% participants.forEach(participant=> { %>
+                                <li>
+                                    <%= participant.name %> (<%= participant.email %>)
+                                            <% if (participant.uid !==meeting.uid) { %>
+                                                <% if (participant.status==='confirmed' ) { %>
+                                                    <span class="status-tag confirmed">Confirmé</span>
+                                                    <% } else if (participant.status==='declined' ) { %>
+                                                        <span class="status-tag declined">Décliné</span>
+                                                        <% } else { %>
+                                                            <span class="status-tag pending">En attente de
+                                                                réponse</span>
+                                                            <% } %>
+                                                                <% } %>
+                                </li>
+                                <% }) %>
+                                    <% } %>
+
+                                        <!-- Participants invités sans compte -->
+                                        <% if (guests && guests.length> 0) { %>
+                                            <% guests.forEach(guest=> { %>
+                                                <li>
+                                                    <%= guest.name || guest.email %> (Invité)
+                                                        <% if (guest.status==='confirmed' ) { %>
+                                                            <span class="status-tag confirmed">Confirmé</span>
+                                                            <% } else if (guest.status==='declined' ) { %>
+                                                                <span class="status-tag declined">Décliné</span>
+                                                                <% } else { %>
+                                                                    <span class="status-tag pending">En attente de
+                                                                        réponse</span>
+                                                                    <% } %>
+                                                </li>
+                                                <% }) %>
+                                                    <% } %>
+
+                                                        <!-- Message si aucun participant -->
+                                                        <% if ((!participants || participants.length===0) && (!guests ||
+                                                            guests.length===0)) { %>
+                                                            <li>Aucun participant</li>
+                                                            <% } %>
                     </ul>
                 </div>
                 <!-- Lieu de la réunion -->
@@ -151,41 +154,71 @@
             <!-- Section des créneaux horaires proposés -->
             <div class="info-section time-slots-section">
                 <h2><i class="far fa-calendar-alt"></i> Créneaux proposés</h2>
-                <div class="time-slots">
-                    <% if (timeSlots && timeSlots.length > 0) { %>
-                        <% timeSlots.forEach(slot => { %>
-                            <div class="time-slot-item">
-                                <div class="slot-content">
-                                    <div class="date">
-                                        <i class="fas fa-calendar-day"></i>
-                                        <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+                <% if (meeting.status !=='confirmed' ) { %>
+                    <div class="time-slots">
+                        <% if (timeSlots && timeSlots.length> 0) { %>
+                            <% timeSlots.forEach(slot=> { %>
+                                <div class="time-slot-item">
+                                    <!--   contenu du créneau   -->
+                                    <div class="slot-content">
+                                        <div class="date">
+                                            <i class="fas fa-calendar-day"></i>
+                                            <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long'
+                                                , day: 'numeric' , month: 'long' , year: 'numeric' }) %>
+                                        </div>
+                                        <div class="time">
+                                            <i class="fas fa-clock"></i>
+                                            <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit'
+                                                , minute: '2-digit' }) %> -
+                                                <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', {
+                                                    hour: '2-digit' , minute: '2-digit' }) %>
+                                        </div>
                                     </div>
-                                    <div class="time">
-                                        <i class="fas fa-clock"></i>
-                                        <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %> - 
-                                        <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
-                                    </div>
+                                    <% if (meeting.uid===user.uid) { %>
+                                        <form action="/meetings/<%= meeting.mid %>/confirm" method="POST"
+                                            class="confirm-slot-form" style="display:inline;">
+                                            <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                            <button type="submit" class="btn-confirm-slot">
+                                                <i class="fas fa-check"></i> Confirmer ce créneau
+                                            </button>
+                                        </form>
+                                        <% } %>
                                 </div>
-                            </div>
-                        <% }) %>
-                    <% } else { %>
-                        <div class="no-slots">
-                            <i class="fas fa-calendar-times"></i>
-                            <p>Aucun créneau disponible</p>
-                        </div>
-                    <% } %>
-                </div>
-
-                <!-- Actions réservées à l'organisateur -->
-                <% if (meeting.uid===user.uid) { %>
-                    <div class="organizer-actions">
-                        <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
-                            <button type="submit" class="btn-reminder">
-                                <i class="fas fa-bell"></i> Envoyer un rappel aux participants
-                            </button>
-                        </form>
+                                <% }) %>
+                                    <% } else { %>
+                                        <div class="no-slots">
+                                            <i class="fas fa-calendar-times"></i>
+                                            <p>Aucun créneau disponible</p>
+                                        </div>
+                                        <% } %>
                     </div>
-                <% } %>
+                    <% } else { %>
+                        <div class="confirmed-slot">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Créneau confirmé :</strong>
+                            <span>
+                                <%= new Date(meeting.start_time).toLocaleDateString('fr-FR', { weekday: 'long' ,
+                                    day: 'numeric' , month: 'long' , year: 'numeric' }) %>
+                                    de
+                                    <%= new Date(meeting.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit' ,
+                                        minute: '2-digit' }) %>
+                                        à
+                                        <%= new Date(meeting.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit' ,
+                                            minute: '2-digit' }) %>
+                            </span>
+                        </div>
+                        <% } %>
+                            <!-- Actions réservées à l'organisateur -->
+                            <% if (meeting.uid===user.uid && meeting.status !=='confirmed' ) { %>
+                                <div class="organizer-actions">
+                                    <form action="/meetings/<%= meeting.mid %>/remind" method="POST"
+                                        class="reminder-form">
+                                        <button type="submit" class="btn-reminder">
+                                            <i class="fas fa-bell"></i> Envoyer un rappel aux participants
+                                        </button>
+                                    </form>
+                                </div>
+                                <% } %>
             </div>
         </div>
 
