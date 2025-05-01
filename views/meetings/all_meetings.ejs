@@ -1,9 +1,33 @@
+<!--
+  Liste des réunions d'un utilisateur
+  
+  Ce template affiche toutes les réunions auxquelles l'utilisateur participe,
+  soit en tant qu'organisateur, soit en tant que participant invité.
+  
+  Fonctionnalités:
+  - Affichage en mode liste (par défaut) ou calendrier
+  - Indication du statut de l'utilisateur pour chaque réunion
+  - Navigation entre les mois dans la vue calendrier
+  - Option d'importation de réunions depuis un fichier iCalendar
+  
+  @template views/meetings/all_meetings
+  @requires partials/header
+  @requires partials/footer
+  @requires css/all_meetings.css
+  @requires css/calendar.css
+  @param {Array} meetings - Liste des réunions de l'utilisateur
+  @param {Object} user - Informations sur l'utilisateur connecté
+  @param {string} valid - Message de confirmation (optionnel)
+-->
+
 <%- include('../partials/header') %>
 
 <div class="meetings-container">
+    <!-- Inclusion des feuilles de style spécifiques -->
     <link rel="stylesheet" href="/css/all_meetings.css" type="text/css">
     <link rel="stylesheet" href="/css/calendar.css" type="text/css">
     
+    <!-- En-tête avec titre et contrôles de vue -->
     <div class="header-container">
         <h1>Mes réunions</h1>
         <div class="view-controls">
@@ -13,6 +37,7 @@
         </div>
     </div>
     
+    <!-- Vue liste des réunions -->
     <div id="list-view">
         <% if (meetings && meetings.length > 0) { %>
             <table class="meetings-table">
@@ -32,6 +57,7 @@
                             <td><%= new Date(meeting.start_time).toLocaleDateString() %></td>
                             <td><%= new Date(meeting.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
                             <td>
+                                <!-- Affichage du statut avec code couleur approprié -->
                                 <% if (meeting.uid === user.uid) { %>
                                     <span class="status-badge organizer">Organisateur</span>
                                 <% } else if (meeting.status === 'confirmed') { %>
@@ -54,7 +80,9 @@
         <% } %>
     </div>
     
+    <!-- Vue calendrier (masquée par défaut) -->
     <div id="calendar-view" style="display: none;">
+        <!-- Le conteneur du calendrier avec les données de réunions passées en attribut data -->
         <div id="calendar-container" class="calendar-container" data-meetings="<%= JSON.stringify(meetings) %>">
             <div class="calendar-header">
                 <div id="month-year" class="month-year"></div>
@@ -63,17 +91,21 @@
                     <button class="calendar-nav-btn" id="next-month">Mois suivant &gt;</button>
                 </div>
             </div>
+            <!-- Grille du calendrier remplie dynamiquement par JavaScript -->
             <div id="calendar-grid" class="calendar-grid">
             </div>
         </div>
     </div>
     
+    <!-- Bouton d'appel à l'action si aucune réunion n'existe -->
     <% if (!meetings || meetings.length === 0) { %>
         <div class="cta-container">
             <a href="/new_meeting" class="btn-primary">Créer ma première réunion</a>
         </div>
     <% } %>
 </div>
+
+<!-- Affichage des messages de confirmation (après import par exemple) -->
 <div class="import-result">
     <% if (valid) { %>
         <p class="success-message"><%= valid %></p>

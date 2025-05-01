@@ -1,13 +1,39 @@
+<!--
+  Détails d'une réunion spécifique
+  
+  Ce template affiche tous les détails d'une réunion:
+  - Informations générales (titre, description, lieu)
+  - Organisateur et participants
+  - Statut de l'utilisateur connecté
+  - Créneaux horaires proposés
+  - Actions spécifiques pour l'organisateur
+  
+  @template views/meetings/detail_meeting
+  @requires partials/header
+  @requires partials/footer
+  @requires css/meeting_detail.css
+  @param {Object} meeting - Informations sur la réunion
+  @param {Object} organizer - Informations sur l'organisateur
+  @param {Array} participants - Liste des participants enregistrés
+  @param {Array} guests - Liste des participants invités sans compte
+  @param {Array} timeSlots - Liste des créneaux horaires proposés
+  @param {Object} responses - Réponses des participants pour chaque créneau
+  @param {Object} userResponses - Réponses de l'utilisateur connecté
+  @param {Object} user - Informations sur l'utilisateur connecté
+-->
+
 <%- include('../partials/header') %>
 
     <div class="meeting-detail-container">
         <link rel="stylesheet" href="/css/meeting_detail.css" type="text/css">
 
+        <!-- En-tête avec titre et actions -->
         <div class="meeting-header">
             <h1>
                 <%= meeting.title %>
             </h1>
             <div class="meeting-actions">
+                <!-- Actions réservées à l'organisateur -->
                 <% if (meeting.uid===user.uid) { %>
                     <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
                     <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
@@ -16,56 +42,61 @@
                             Supprimer
                         </button>
                     </form>
-                    <% } %>
+                <% } %>
             </div>
         </div>
 
+        <!-- Informations détaillées de la réunion -->
         <div class="meeting-info">
             <div class="info-section">
                 <h2>Détails</h2>
+                <!-- Description de la réunion -->
                 <div class="info-group">
                     <label>Description</label>
                     <p>
                         <%= meeting.description || 'Aucune description' %>
                     </p>
                 </div>
+                <!-- Organisateur -->
                 <div class="info-group">
                     <label>Organisateur</label>
                     <p>
                         <%= organizer.name %>
                     </p>
                 </div>
+                <!-- Statut de l'utilisateur connecté par rapport à cette réunion -->
                 <div class="info-group">
                     <label>Votre statut</label>
                     <% if (meeting.uid===user.uid) { %>
                         <div class="status-tag organizer">
                             <i class="fas fa-crown"></i> Organisateur
                         </div>
-                        <% } else { %>
-                            <% let participantStatus='pending' ; participants.forEach(participant=> {
-                                if (participant.uid === user.uid && participant.status) {
+                    <% } else { %>
+                        <% let participantStatus='pending' ; participants.forEach(participant=> {
+                            if (participant.uid === user.uid && participant.status) {
                                 participantStatus = participant.status;
-                                }
-                                });
-                                %>
-                                <% if (participantStatus==='confirmed' ) { %>
-                                    <div class="status-tag confirmed">
-                                        <i class="fas fa-check-circle"></i> Confirmé
-                                    </div>
-                                    <% } else if (participantStatus==='declined' ) { %>
-                                        <div class="status-tag declined">
-                                            <i class="fas fa-times-circle"></i> Décliné
-                                        </div>
-                                        <% } else { %>
-                                            <div class="status-tag pending">
-                                                <i class="fas fa-clock"></i> En attente de réponse
-                                            </div>
-                                            <% } %>
-                                                <% } %>
+                            }
+                        }); %>
+                        <% if (participantStatus==='confirmed' ) { %>
+                            <div class="status-tag confirmed">
+                                <i class="fas fa-check-circle"></i> Confirmé
+                            </div>
+                        <% } else if (participantStatus==='declined' ) { %>
+                            <div class="status-tag declined">
+                                <i class="fas fa-times-circle"></i> Décliné
+                            </div>
+                        <% } else { %>
+                            <div class="status-tag pending">
+                                <i class="fas fa-clock"></i> En attente de réponse
+                            </div>
+                        <% } %>
+                    <% } %>
                 </div>
+                <!-- Liste des participants avec leur statut -->
                 <div class="info-group">
                     <label>Participants</label>
                     <ul class="participants-list">
+                      <!-- Participants avec compte -->
                       <% if (participants && participants.length > 0) { %>
                         <% participants.forEach(participant => { %>
                           <li>
@@ -83,6 +114,7 @@
                         <% }) %>
                       <% } %>
                       
+                      <!-- Participants invités sans compte -->
                       <% if (guests && guests.length > 0) { %>
                         <% guests.forEach(guest => { %>
                           <li>
@@ -98,11 +130,13 @@
                         <% }) %>
                       <% } %>
                       
+                      <!-- Message si aucun participant -->
                       <% if ((!participants || participants.length === 0) && (!guests || guests.length === 0)) { %>
                         <li>Aucun participant</li>
                       <% } %>
                     </ul>
-                  </div>
+                </div>
+                <!-- Lieu de la réunion -->
                 <div class="info-group">
                     <label>Lieu</label>
                     <div class="location-info">
@@ -114,6 +148,7 @@
                 </div>
             </div>
 
+            <!-- Section des créneaux horaires proposés -->
             <div class="info-section time-slots-section">
                 <h2><i class="far fa-calendar-alt"></i> Créneaux proposés</h2>
                 <div class="time-slots">
@@ -141,6 +176,7 @@
                     <% } %>
                 </div>
 
+                <!-- Actions réservées à l'organisateur -->
                 <% if (meeting.uid===user.uid) { %>
                     <div class="organizer-actions">
                         <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
@@ -153,6 +189,7 @@
             </div>
         </div>
 
+        <!-- Lien de retour -->
         <div class="back-link">
             <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
         </div>

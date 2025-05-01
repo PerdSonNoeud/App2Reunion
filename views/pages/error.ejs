@@ -1,17 +1,37 @@
+<!--
+  Page d'erreur générique
+  
+  Ce template affiche une page d'erreur générique lorsqu'une exception 
+  se produit dans l'application ou qu'une action n'est pas autorisée.
+  Il peut être utilisé pour différents types d'erreurs (403, 500, etc.)
+  en personnalisant le titre et le message.
+  
+  @template views/pages/error
+  @requires partials/header
+  @requires partials/footer
+  @requires css/error.css
+  @param {string} title - Titre de l'erreur à afficher
+  @param {string} message - Message d'erreur détaillé (optionnel)
+  @param {Object} user - Informations sur l'utilisateur connecté
+-->
+
 <%- include('../partials/header') %>
 
 <div class="error-container">
   <link rel="stylesheet" href="/css/error.css">
   
   <div class="error-content">
+    <!-- Titre de l'erreur (ex: "Accès refusé", "Erreur serveur", etc.) -->
     <h1><%= title %></h1>
     
+    <!-- Message d'erreur personnalisé ou message par défaut -->
     <% if (locals.message) { %>
       <p class="error-message"><%= message %></p>
     <% } else { %>
       <p class="error-message">Une erreur s'est produite lors du traitement de votre demande.</p>
     <% } %>
     
+    <!-- Boutons d'action pour revenir en arrière ou aller aux réunions -->
     <div class="action-buttons">
       <a href="javascript:history.back()" class="btn-secondary">Retour</a>
       <a href="/meetings" class="btn-primary">Mes réunions</a>

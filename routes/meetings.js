@@ -1,9 +1,27 @@
+/**
+ * Gestion des réunions et des réponses des participants
+ * 
+ * Ce module gère les routes pour afficher, créer, répondre et gérer les réunions.
+ * Il inclut des fonctionnalités pour les utilisateurs enregistrés et les invités externes.
+ * 
+ * @module routes/meetings
+ */
+
 const express = require('express')
 const { pool } = require('../config/db')
 const router = express.Router()
 const notificationService = require('./notificationService')
 
-// Fonction pour vérifier et gérer les réunions où tous les participants ont refusé
+/**
+ * Vérifie si tous les participants ont décliné la réunion
+ * 
+ * Cette fonction compte les participants enregistrés et invités, 
+ * vérifie leurs statuts et notifie l'organisateur si tous ont refusé.
+ * 
+ * @async
+ * @param {number} meetingId - Identifiant de la réunion à vérifier
+ * @returns {Promise<void>}
+ */
 async function checkAllParticipantsDeclined (meetingId) {
   try {
     // Compter les participants
@@ -55,6 +73,13 @@ async function checkAllParticipantsDeclined (meetingId) {
   }
 }
 
+/**
+ * Middleware pour vérifier si l'utilisateur est authentifié
+ * 
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ * @param {Function} next - Fonction pour passer au middleware suivant
+ */
 const isAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
     next()
@@ -63,6 +88,13 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
+/**
+ * Affiche le formulaire de réponse pour un invité externe
+ * 
+ * @route GET /meetings/guest/:token
+ * @param {Request} req - Requête Express contenant le token d'identification
+ * @param {Response} res - Réponse Express
+ */
 router.get('/guest/:token', async (req, res) => {
   const token = req.params.token;
   
@@ -116,7 +148,13 @@ router.get('/guest/:token', async (req, res) => {
   }
 });
 
-// Route pour enregistrer les réponses des invités
+/**
+ * Traite les réponses des invités externes
+ * 
+ * @route POST /meetings/guest/:token/respond
+ * @param {Request} req - Requête Express contenant le token et les réponses
+ * @param {Response} res - Réponse Express
+ */
 router.post('/guest/:token/respond', async (req, res) => {
   const token = req.params.token
   const { responses } = req.body
@@ -275,6 +313,13 @@ router.post('/guest/:token/respond', async (req, res) => {
   }
 })
 
+/**
+ * Affiche le formulaire de réponse pour un utilisateur enregistré
+ * 
+ * @route GET /meetings/:id/respond
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.get('/:id/respond', async (req, res) => {
   const meetingId = req.params.id;
   
@@ -378,7 +423,13 @@ router.get('/:id/respond', async (req, res) => {
   }
 });
 
-// Route pour enregistrer les réponses (utilisateur connecté)
+/**
+ * Traite les réponses des utilisateurs enregistrés
+ * 
+ * @route POST /meetings/:id/respond
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.post('/:id/respond', isAuthenticated, async (req, res) => {
   const meetingId = req.params.id
   const userId = req.session.user.uid
@@ -537,7 +588,13 @@ router.post('/:id/respond', isAuthenticated, async (req, res) => {
   }
 })
 
-// Route pour envoyer des rappels
+/**
+ * Envoie des rappels aux participants qui n'ont pas répondu
+ * 
+ * @route POST /meetings/:id/remind
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.post('/:id/remind', isAuthenticated, async (req, res) => {
   const meetingId = req.params.id
   const userId = req.session.user.uid
@@ -604,7 +661,13 @@ router.post('/:id/remind', isAuthenticated, async (req, res) => {
   }
 })
 
-// Route pour supprimer une réunion
+/**
+ * Supprime une réunion
+ * 
+ * @route POST /meetings/:id/delete
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.post('/:id/delete', isAuthenticated, (req, res) => {
   const meetingId = req.params.id
   const userId = req.session.user.uid
@@ -629,6 +692,13 @@ router.post('/:id/delete', isAuthenticated, (req, res) => {
   )
 })
 
+/**
+ * Affiche les détails d'une réunion
+ * 
+ * @route GET /meetings/:id
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.get('/:id', isAuthenticated, async (req, res) => {
   const meetingId = req.params.id
   const userId = req.session.user.uid
@@ -767,6 +837,13 @@ router.get('/:id', isAuthenticated, async (req, res) => {
   }
 })
 
+/**
+ * Affiche la liste des réunions de l'utilisateur
+ * 
+ * @route GET /meetings
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
 router.get('/', isAuthenticated, (req, res) => {
   const userId = req.session.user.uid;
   const valid = req.query.valid || null;
