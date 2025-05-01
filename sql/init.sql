@@ -173,6 +173,9 @@ ALTER TABLE guest_participants ADD COLUMN status VARCHAR(20) DEFAULT 'pending';
 -- Contrainte d'unicité pour éviter les doublons de réponses
 ALTER TABLE responses ADD CONSTRAINT unique_user_timeslot UNIQUE (uid, tid);
 
+-- Ajouter la colonne status à la table meetings
+ALTER TABLE meetings ADD COLUMN status VARCHAR(20) DEFAULT 'pending';
+
 -- =============================================================================
 -- Configuration des utilisateurs et des permissions
 -- =============================================================================
