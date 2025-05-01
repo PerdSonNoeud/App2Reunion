@@ -1,4 +1,7 @@
-.meeting-detail-container {
+/* ======================================
+   BASE LAYOUT & CONTAINER
+   ====================================== */
+   .meeting-detail-container {
     max-width: 900px;
     background-color: white;
     border-radius: 12px;
@@ -7,6 +10,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
+  /* ======================================
+     HEADER STYLES
+     ====================================== */
   .meeting-header {
     display: flex;
     justify-content: space-between;
@@ -15,6 +21,7 @@
     padding-bottom: 1rem;
     border-bottom: 2px solid #f6a0a0;
     text-align: center;
+    position: relative;
   }
   
   .meeting-header h1 {
@@ -30,28 +37,42 @@
     display: flex;
     gap: 1rem;
     position: absolute;
+    right: 0;
   }
   
-  .btn-edit, .btn-delete {
+  /* ======================================
+     BUTTON STYLES
+     ====================================== */
+  .btn-edit, 
+  .btn-delete, 
+  .btn-back, 
+  .btn-reminder, 
+  .btn-confirm-slot {
     padding: 0.7rem 1.2rem;
     border-radius: 8px;
     font-weight: 600;
     border: none;
     text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-edit, 
+  .btn-reminder {
+    background-color: #f6a0a0;
     color: white;
   }
   
-  .btn-edit {
-    background-color: #f6a0a0;
-  }
-  
-  .btn-edit:hover {
+  .btn-edit:hover, 
+  .btn-reminder:hover {
     background-color: #f47c7c;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(246, 160, 160, 0.2);
   }
   
   .btn-delete {
     background-color: #ff4444;
+    color: white;
   }
   
   .btn-delete:hover {
@@ -60,6 +81,44 @@
     box-shadow: 0 4px 8px rgba(255, 68, 68, 0.2);
   }
   
+  .btn-back {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .btn-back:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+  }
+  
+  .btn-confirm-slot {
+    background-color: #77dd77;
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  
+  .btn-confirm-slot:hover {
+    background-color: #5dc25d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(119, 221, 119, 0.2);
+  }
+  
+  .btn-confirm-slot i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-reminder {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* ======================================
+     INFO GRID LAYOUT
+     ====================================== */
   .meeting-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -107,20 +166,9 @@
     color: #555;
   }
   
-  .participants-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-  }
-  
-  .participants-list li {
-    padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    background-color: white;
-    border-radius: 6px;
-  }
-  
+  /* ======================================
+     LOCATION INFO
+     ====================================== */
   .location-info {
     display: flex;
     align-items: center;
@@ -136,59 +184,10 @@
     color: #f6a0a0;
   }
   
-  .back-link {
-    margin-top: 2rem;
-    text-align: center;
-  }
-  
-  .btn-back {
-    display: inline-block;
-    background-color: #6c757d;
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  
-  .btn-back:hover {
-    background-color: #5a6268;
-    transform: translateY(-2px);
-  }
-  
-  .delete-form {
-    display: inline;
-  }
-  
-  .btn-reminder {
-    background-color: #f6a0a0;
-    color: white;
-    padding: 0.7rem 1.2rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    margin-top: 1rem;
-    width: 100%;
-  }
-  
-  .btn-reminder:hover {
-    background-color: #f47c7c;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .meeting-info {
-      grid-template-columns: 1fr;
-    }
-    
-    .meeting-actions {
-      position: static;
-      margin-top: 1rem;
-      justify-content: center;
-    }
-  }
-
-.status-tag {
+  /* ======================================
+     STATUS TAGS
+     ====================================== */
+  .status-tag {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -196,191 +195,250 @@
     border-radius: 6px;
     font-weight: 600;
     margin-top: 0.5rem;
-}
-
-.status-tag i {
+  }
+  
+  .status-tag i {
     margin-right: 0.5rem;
     font-size: 1.1rem;
-}
-
-.status-tag.organizer {
+  }
+  
+  .status-tag.organizer {
     background-color: #b19cd9;
     color: white;
-}
-
-.status-tag.confirmed {
+  }
+  
+  .status-tag.confirmed {
     background-color: #77dd77;
     color: white;
-}
-
-.status-tag.declined {
+  }
+  
+  .status-tag.declined {
     background-color: #ff6b6b;
     color: white;
-}
-
-.status-tag.pending {
+  }
+  
+  .status-tag.pending {
     background-color: #ffd166;
     color: #333;
-}
-
-.participants-list li {
+  }
+  
+  /* ======================================
+     PARTICIPANTS LIST
+     ====================================== */
+  .participants-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+  }
+  
+  .participants-list li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.participant-status {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: white;
+    border-radius: 6px;
+  }
+  
+  .participant-status {
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-}
-
-.participant-status.confirmed {
+  }
+  
+  .participant-status.confirmed {
     background-color: rgba(119, 221, 119, 0.2);
     color: #2a9d2a;
-}
-
-.participant-status.declined {
+  }
+  
+  .participant-status.declined {
     background-color: rgba(255, 107, 107, 0.2);
     color: #d32f2f;
-}
-
-.participant-status.pending {
+  }
+  
+  .participant-status.pending {
     background-color: rgba(255, 209, 102, 0.2);
     color: #ff8f00;
-}
-
-.btn-confirm-slot {
-    background-color: #77dd77;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+  }
+  
+  /* ======================================
+     CONFIRMED SLOT STYLES
+     ====================================== */
+  .confirmed-slot {
+    background-color: #ebffeb;
+    border-left: 4px solid #77dd77;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .confirmed-slot i {
+    color: #2a9d2a;
+    font-size: 1.8rem;
+    margin-right: 1rem;
+  }
+  
+  .confirmed-slot strong {
     font-weight: 600;
-    text-decoration: none;
-}
-
-/* Tableau des disponibilités */
-.availability-table-container {
-  margin-bottom: 2rem;
-  overflow-x: auto;
-}
-
-.availability-table-container h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #444;
-}
-
-.availability-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.availability-table th,
-.availability-table td {
-  padding: 0.75rem;
-  text-align: center;
-  border: 1px solid #e0e0e0;
-}
-
-.availability-table th {
-  background-color: #f8f8f8;
-  font-weight: 600;
-  color: #444;
-  font-size: 0.9rem;
-}
-
-.availability-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.response-cell {
-  width: 60px;
-}
-
-.response-cell i {
-  font-size: 1.2rem;
-}
-
-.response-cell.available {
-  background-color: rgba(119, 221, 119, 0.2);
-}
-
-.response-cell.available i {
-  color: #2a9d2a;
-}
-
-.response-cell.maybe {
-  background-color: rgba(255, 209, 102, 0.2);
-}
-
-.response-cell.maybe i {
-  color: #ff8f00;
-}
-
-.response-cell.unavailable {
-  background-color: rgba(255, 107, 107, 0.2);
-}
-
-.response-cell.unavailable i {
-  color: #d32f2f;
-}
-
-.response-cell.pending {
-  background-color: rgba(200, 200, 200, 0.2);
-}
-
-.response-cell.pending i {
-  color: #757575;
-}
-
-/* Amélioration du bouton de confirmation */
-.btn-confirm-slot {
-  background-color: #77dd77;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
-  transition: all 0.2s ease;
-}
-
-.btn-confirm-slot:hover {
-  background-color: #5dc25d;
-  transform: translateY(-2px);
-}
-
-.btn-confirm-slot i {
-  margin-right: 0.5rem;
-}
-
-/* Style pour le créneau confirmé */
-.confirmed-slot {
-  background-color: #ebffeb;
-  border-left: 4px solid #77dd77;
-  padding: 1.5rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.confirmed-slot i {
-  color: #2a9d2a;
-  font-size: 1.8rem;
-  margin-right: 1rem;
-}
-
-.confirmed-slot strong {
-  font-weight: 600;
-  margin-right: 0.5rem;
-}
+    margin-right: 0.5rem;
+  }
+  
+  /* ======================================
+     AVAILABILITY TABLE STYLES
+     ====================================== */
+  .availability-table-container {
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+  
+  .availability-table-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #444;
+  }
+  
+  .availability-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .availability-table th,
+  .availability-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .availability-table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.9rem;
+  }
+  
+  .availability-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .response-cell {
+    width: 60px;
+  }
+  
+  .response-cell i {
+    font-size: 1.2rem;
+  }
+  
+  .response-cell.available {
+    background-color: rgba(119, 221, 119, 0.2);
+  }
+  
+  .response-cell.available i {
+    color: #2a9d2a;
+  }
+  
+  .response-cell.maybe {
+    background-color: rgba(255, 209, 102, 0.2);
+  }
+  
+  .response-cell.maybe i {
+    color: #ff8f00;
+  }
+  
+  .response-cell.unavailable {
+    background-color: rgba(255, 107, 107, 0.2);
+  }
+  
+  .response-cell.unavailable i {
+    color: #d32f2f;
+  }
+  
+  .response-cell.pending {
+    background-color: rgba(200, 200, 200, 0.2);
+  }
+  
+  .response-cell.pending i {
+    color: #757575;
+  }
+  
+  /* ======================================
+     UTILITIES
+     ====================================== */
+  .delete-form {
+    display: inline;
+  }
+  
+  .back-link {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  /* ======================================
+     RESPONSIVE STYLES
+     ====================================== */
+  @media (max-width: 768px) {
+    .meeting-detail-container {
+      padding: 1.5rem;
+      margin: 1.5rem auto;
+    }
+    
+    .meeting-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .meeting-header h1 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    
+    .meeting-info {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .meeting-actions {
+      position: static;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    
+    .btn-edit, 
+    .btn-delete, 
+    .btn-back, 
+    .btn-reminder {
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .info-section {
+      padding: 1.5rem;
+    }
+    
+    .info-section h2 {
+      font-size: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .meeting-header h1 {
+      font-size: 1.6rem;
+    }
+    
+    .btn-edit, 
+    .btn-delete {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+    
+    .meeting-actions {
+      gap: 0.5rem;
+    }
+  }
