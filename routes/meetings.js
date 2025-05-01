@@ -149,6 +149,59 @@ router.get('/guest/:token', async (req, res) => {
 });
 
 /**
+ * Route pour confirmer le créneau choisi par l'organisateur
+ * 
+ * @route POST /meetings/:mid/confirm
+ * @param {Request} req - Requête Express contenant le token d'identification
+ * @param {Response} res - Réponse Express
+ */
+router.post('/:mid/confirm', async (req, res) => {
+  const { mid } = req.params;
+  const { tid } = req.body;
+  const user = req.session.user;
+
+  // Vérifie que l'utilisateur est bien l'organisateur
+  const meetingResult = await pool.query('SELECT * FROM meetings WHERE mid = $1', [mid]);
+  const meeting = meetingResult.rows[0];
+  if (!meeting || meeting.uid !== user.uid) {
+      return res.status(403).render('pages/error', { title: 'Accès refusé', user });
+  }
+
+  // Récupère le créneau choisi
+  const slotResult = await pool.query('SELECT * FROM time_slots WHERE tid = $1 AND mid = $2', [tid, mid]);
+  const slot = slotResult.rows[0];
+  if (!slot) {
+      return res.status(400).render('pages/error', { title: 'Créneau invalide', user });
+  }
+
+  // Met à jour la réunion avec le créneau confirmé
+  await pool.query(
+    'UPDATE meetings SET start_time = $1, end_time = $2, status = $3 WHERE mid = $4',
+    [slot.start_time, slot.end_time, 'confirmed', mid]
+  );
+
+  //Notifier les participants 
+
+  const participantsResult = await pool.query(
+    'SELECT u.uid FROM participants p JOIN users u ON p.uid = u.uid WHERE p.mid = $1',
+    [mid]
+  );
+
+  const participants = participantsResult.rows;
+
+  for (const participant of participants) {
+    await notificationService.createNotification(
+      participant.uid,
+      mid,
+      `Le créneau "${slot.start_time} - ${slot.end_time}" a été confirmé pour la réunion "${meeting.title}"`,
+      'confirm'
+    );
+  }
+
+  res.redirect(`/meetings/${mid}`);
+});
+
+/**
  * Traite les réponses des invités externes
  * 
  * @route POST /meetings/guest/:token/respond

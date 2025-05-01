@@ -22,177 +22,419 @@
   @param {Object} user - Informations sur l'utilisateur connecté
 -->
 
+<!-- Inclusion de l'en-tête commun à toutes les pages (navigation, styles globaux, etc.) -->
 <%- include('../partials/header') %>
 
-    <div class="meeting-detail-container">
-        <link rel="stylesheet" href="/css/meeting_detail.css" type="text/css">
+<!-- Conteneur principal de la page de détail d'une réunion -->
+<div class="meeting-detail-container">
+    <!-- Chargement du fichier CSS spécifique pour cette page -->
+    <link rel="stylesheet" href="/css/meeting_detail.css" type="text/css">
 
-        <!-- En-tête avec titre et actions -->
-        <div class="meeting-header">
-            <h1>
-                <%= meeting.title %>
-            </h1>
-            <div class="meeting-actions">
-                <!-- Actions réservées à l'organisateur -->
-                <% if (meeting.uid===user.uid) { %>
-                    <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
-                    <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
-                        <button type="submit" class="btn-delete"
-                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
-                            Supprimer
-                        </button>
-                    </form>
-                <% } %>
-            </div>
+    <!-- 
+      SECTION 1: EN-TÊTE DE LA RÉUNION
+      Affiche le titre de la réunion et les boutons d'action pour l'organisateur
+    -->
+    <div class="meeting-header">
+        <!-- Titre de la réunion -->
+        <h1><%= meeting.title %></h1>
+        
+        <!-- Actions disponibles pour l'organisateur (modifier/supprimer) -->
+        <div class="meeting-actions">
+            <!-- Vérifie si l'utilisateur connecté est l'organisateur de la réunion -->
+            <% if (meeting.uid === user.uid) { %>
+                <!-- Lien pour modifier la réunion -->
+                <a href="/meetings/edit/<%= meeting.mid %>" class="btn-edit">Modifier</a>
+                
+                <!-- Formulaire pour supprimer la réunion avec confirmation -->
+                <form action="/meetings/<%= meeting.mid %>/delete" method="POST" class="delete-form">
+                    <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
+                        Supprimer
+                    </button>
+                </form>
+            <% } %>
         </div>
+    </div>
 
-        <!-- Informations détaillées de la réunion -->
-        <div class="meeting-info">
-            <div class="info-section">
-                <h2>Détails</h2>
-                <!-- Description de la réunion -->
-                <div class="info-group">
-                    <label>Description</label>
-                    <p>
-                        <%= meeting.description || 'Aucune description' %>
-                    </p>
-                </div>
-                <!-- Organisateur -->
-                <div class="info-group">
-                    <label>Organisateur</label>
-                    <p>
-                        <%= organizer.name %>
-                    </p>
-                </div>
-                <!-- Statut de l'utilisateur connecté par rapport à cette réunion -->
-                <div class="info-group">
-                    <label>Votre statut</label>
-                    <% if (meeting.uid===user.uid) { %>
-                        <div class="status-tag organizer">
-                            <i class="fas fa-crown"></i> Organisateur
-                        </div>
-                    <% } else { %>
-                        <% let participantStatus='pending' ; participants.forEach(participant=> {
+    <!-- 
+      SECTION 2: INFORMATIONS DÉTAILLÉES DE LA RÉUNION
+      Contient les sous-sections: détails généraux, participants, créneaux horaires
+    -->
+    <div class="meeting-info">
+        <!-- 
+          SOUS-SECTION 2.1: DÉTAILS GÉNÉRAUX
+          Affiche la description, l'organisateur, le statut de l'utilisateur et les participants
+        -->
+        <div class="info-section">
+            <h2>Détails</h2>
+            
+            <!-- Description de la réunion (texte libre) -->
+            <div class="info-group">
+                <label>Description</label>
+                <!-- Affiche la description ou un message par défaut si non définie -->
+                <p><%= meeting.description || 'Aucune description' %></p>
+            </div>
+            
+            <!-- Nom de l'organisateur de la réunion -->
+            <div class="info-group">
+                <label>Organisateur</label>
+                <p><%= organizer.name %></p>
+            </div>
+            
+            <!-- 
+              Statut de l'utilisateur connecté par rapport à cette réunion
+              Différent selon que l'utilisateur est l'organisateur ou un participant
+            -->
+            <div class="info-group">
+                <label>Votre statut</label>
+                <!-- Si l'utilisateur est l'organisateur -->
+                <% if (meeting.uid === user.uid) { %>
+                    <div class="status-tag organizer">
+                        <i class="fas fa-crown"></i> Organisateur
+                    </div>
+                <!-- Si l'utilisateur est un participant -->
+                <% } else { %>
+                    <!-- 
+                      Recherche du statut de l'utilisateur dans la liste des participants
+                      Valeurs possibles: 'confirmed', 'declined', 'pending'
+                    -->
+                    <% 
+                        let participantStatus = 'pending'; // Statut par défaut
+                        // Parcours la liste des participants pour trouver le statut de l'utilisateur connecté
+                        participants.forEach(participant => {
                             if (participant.uid === user.uid && participant.status) {
                                 participantStatus = participant.status;
                             }
-                        }); %>
-                        <% if (participantStatus==='confirmed' ) { %>
-                            <div class="status-tag confirmed">
-                                <i class="fas fa-check-circle"></i> Confirmé
-                            </div>
-                        <% } else if (participantStatus==='declined' ) { %>
-                            <div class="status-tag declined">
-                                <i class="fas fa-times-circle"></i> Décliné
-                            </div>
-                        <% } else { %>
-                            <div class="status-tag pending">
-                                <i class="fas fa-clock"></i> En attente de réponse
-                            </div>
-                        <% } %>
+                        });
+                    %>
+                    
+                    <!-- Affichage du statut avec l'icône et la couleur appropriées -->
+                    <% if (participantStatus === 'confirmed') { %>
+                        <div class="status-tag confirmed">
+                            <i class="fas fa-check-circle"></i> Confirmé
+                        </div>
+                    <% } else if (participantStatus === 'declined') { %>
+                        <div class="status-tag declined">
+                            <i class="fas fa-times-circle"></i> Décliné
+                        </div>
+                    <% } else { %>
+                        <div class="status-tag pending">
+                            <i class="fas fa-clock"></i> En attente de réponse
+                        </div>
                     <% } %>
-                </div>
-                <!-- Liste des participants avec leur statut -->
-                <div class="info-group">
-                    <label>Participants</label>
-                    <ul class="participants-list">
-                      <!-- Participants avec compte -->
-                      <% if (participants && participants.length > 0) { %>
+                <% } %>
+            </div>
+            
+            <!-- 
+              LISTE DES PARTICIPANTS
+              Affiche tous les participants avec leurs statuts respectifs
+            -->
+            <div class="info-group">
+                <label>Participants</label>
+                <ul class="participants-list">
+                    <!-- 
+                      Participants avec compte utilisateur
+                      Affiche le nom, l'email et le statut de participation
+                    -->
+                    <% if (participants && participants.length > 0) { %>
                         <% participants.forEach(participant => { %>
-                          <li>
-                            <%= participant.name %> (<%= participant.email %>)
-                            <% if (participant.uid !== meeting.uid) { %>
-                              <% if (participant.status === 'confirmed') { %>
-                                <span class="status-tag confirmed">Confirmé</span>
-                              <% } else if (participant.status === 'declined') { %>
-                                <span class="status-tag declined">Décliné</span>
-                              <% } else { %>
-                                <span class="status-tag pending">En attente de réponse</span>
-                              <% } %>
-                            <% } %>
-                          </li>
-                        <% }) %>
-                      <% } %>
-                      
-                      <!-- Participants invités sans compte -->
-                      <% if (guests && guests.length > 0) { %>
+                            <li>
+                                <!-- Nom et email du participant -->
+                                <%= participant.name %> (<%= participant.email %>)
+                                
+                                <!-- 
+                                  N'affiche le statut que pour les participants (pas pour l'organisateur)
+                                  L'organisateur est toujours considéré comme "confirmé"
+                                -->
+                                <% if (participant.uid !== meeting.uid) { %>
+                                    <% if (participant.status === 'confirmed') { %>
+                                        <span class="status-tag confirmed">Confirmé</span>
+                                    <% } else if (participant.status === 'declined') { %>
+                                        <span class="status-tag declined">Décliné</span>
+                                    <% } else { %>
+                                        <span class="status-tag pending">En attente de réponse</span>
+                                    <% } %>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } %>
+
+                    <!-- 
+                      Participants invités sans compte utilisateur (guests)
+                      Ces participants ont été invités par email mais n'ont pas de compte sur la plateforme
+                    -->
+                    <% if (guests && guests.length > 0) { %>
                         <% guests.forEach(guest => { %>
-                          <li>
-                            <%= guest.name || guest.email %> (Invité)
-                            <% if (guest.status === 'confirmed') { %>
-                              <span class="status-tag confirmed">Confirmé</span>
-                            <% } else if (guest.status === 'declined') { %>
-                              <span class="status-tag declined">Décliné</span>
-                            <% } else { %>
-                              <span class="status-tag pending">En attente de réponse</span>
-                            <% } %>
-                          </li>
-                        <% }) %>
-                      <% } %>
-                      
-                      <!-- Message si aucun participant -->
-                      <% if ((!participants || participants.length === 0) && (!guests || guests.length === 0)) { %>
+                            <li>
+                                <!-- Affiche le nom s'il existe, sinon l'email -->
+                                <%= guest.name || guest.email %> (Invité)
+                                
+                                <!-- Statut de participation pour les invités -->
+                                <% if (guest.status === 'confirmed') { %>
+                                    <span class="status-tag confirmed">Confirmé</span>
+                                <% } else if (guest.status === 'declined') { %>
+                                    <span class="status-tag declined">Décliné</span>
+                                <% } else { %>
+                                    <span class="status-tag pending">En attente de réponse</span>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } %>
+
+                    <!-- Message affiché s'il n'y a aucun participant -->
+                    <% if ((!participants || participants.length === 0) && (!guests || guests.length === 0)) { %>
                         <li>Aucun participant</li>
-                      <% } %>
-                    </ul>
-                </div>
-                <!-- Lieu de la réunion -->
-                <div class="info-group">
-                    <label>Lieu</label>
-                    <div class="location-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>
-                            <%= meeting.location || 'Aucun lieu spécifié' %>
-                        </p>
-                    </div>
+                    <% } %>
+                </ul>
+            </div>
+            
+            <!-- Lieu de la réunion -->
+            <div class="info-group">
+                <label>Lieu</label>
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <!-- Affiche le lieu ou un message par défaut si non défini -->
+                    <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
                 </div>
             </div>
+        </div>
 
-            <!-- Section des créneaux horaires proposés -->
-            <div class="info-section time-slots-section">
-                <h2><i class="far fa-calendar-alt"></i> Créneaux proposés</h2>
+        <!-- 
+          SOUS-SECTION 2.2: CRÉNEAUX HORAIRES PROPOSÉS
+          Affiche les différentes propositions d'horaires pour la réunion
+          Interface différente selon que la réunion est confirmée ou non
+        -->
+        <div class="info-section time-slots-section">
+            <h2><i class="far fa-calendar-alt"></i> Créneaux proposés</h2>
+            
+            <!-- 
+              Si la réunion n'est pas encore confirmée (en phase de proposition)
+              Affiche les créneaux proposés pour permettre aux participants de voter
+            -->
+            <% if (meeting.status !== 'confirmed') { %>
                 <div class="time-slots">
+                    <!-- S'il y a des créneaux horaires proposés -->
                     <% if (timeSlots && timeSlots.length > 0) { %>
+                        <!-- 
+                          TABLEAU DES DISPONIBILITÉS (visible uniquement par l'organisateur)
+                          Montre une vue synthétique des réponses de tous les participants
+                        -->
+                        <% if (meeting.uid === user.uid) { %>
+                            <div class="availability-table-container">
+                                <h3>Réponses des participants</h3>
+                                <table class="availability-table">
+                                    <!-- En-tête du tableau avec les créneaux horaires -->
+                                    <thead>
+                                        <tr>
+                                            <th>Participant</th>
+                                            <!-- Génère une colonne pour chaque créneau proposé -->
+                                            <% timeSlots.forEach(slot => { %>
+                                                <th>
+                                                    <!-- Format court date: ex. "Lun. 12 jan." -->
+                                                    <%= new Date(slot.start_time).toLocaleDateString('fr-FR', {weekday: 'short', day: 'numeric', month: 'short'}) %>
+                                                    <br>
+                                                    <!-- Format heure: ex. "14:30" -->
+                                                    <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
+                                                </th>
+                                            <% }); %>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- 
+                                          Participants avec compte utilisateur
+                                          Pour chaque participant, on affiche sa disponibilité pour chaque créneau
+                                        -->
+                                        <% if (participants && participants.length > 0) { %>
+                                            <% participants.forEach(participant => { %>
+                                                <!-- On n'affiche pas l'organisateur dans cette liste -->
+                                                <% if (participant.uid !== meeting.uid) { %>
+                                                    <tr>
+                                                        <td><%= participant.name %></td>
+                                                        <!-- Pour chaque créneau, recherche de la disponibilité du participant -->
+                                                        <% timeSlots.forEach(slot => { %>
+                                                            <% 
+                                                                // Valeurs possibles: 'available', 'maybe', 'unavailable', 'pending'
+                                                                let availability = 'pending'; // Par défaut: en attente
+                                                                
+                                                                // Recherche de la réponse du participant pour ce créneau
+                                                                if (responses && responses[slot.tid]) {
+                                                                    const participantResponse = responses[slot.tid].find(r => r.id === participant.uid);
+                                                                    if (participantResponse) {
+                                                                        availability = participantResponse.availability;
+                                                                    }
+                                                                }
+                                                            %>
+                                                            <!-- Cellule colorée selon la disponibilité -->
+                                                            <td class="response-cell <%= availability %>">
+                                                                <% if (availability === 'available') { %>
+                                                                    <i class="fas fa-check-circle"></i>
+                                                                <% } else if (availability === 'maybe') { %>
+                                                                    <i class="fas fa-question-circle"></i>
+                                                                <% } else if (availability === 'unavailable') { %>
+                                                                    <i class="fas fa-times-circle"></i>
+                                                                <% } else { %>
+                                                                    <i class="fas fa-clock"></i>
+                                                                <% } %>
+                                                            </td>
+                                                        <% }); %>
+                                                    </tr>
+                                                <% } %>
+                                            <% }); %>
+                                        <% } %>
+
+                                        <!-- 
+                                          Participants invités sans compte
+                                          Pour chaque invité, on affiche sa disponibilité pour chaque créneau
+                                        -->
+                                        <% if (guests && guests.length > 0) { %>
+                                            <% guests.forEach(guest => { %>
+                                                <tr>
+                                                    <td><%= guest.name || guest.email %> (Invité)</td>
+                                                    <!-- Pour chaque créneau, recherche de la disponibilité de l'invité -->
+                                                    <% timeSlots.forEach(slot => { %>
+                                                        <% 
+                                                            // Par défaut: en attente de réponse
+                                                            let availability = 'pending';
+                                                            
+                                                            // Recherche de la réponse de l'invité pour ce créneau
+                                                            // Note: pour les invités, on utilise gid (guest ID) au lieu de uid
+                                                            if (responses && responses[slot.tid]) {
+                                                                const guestResponse = responses[slot.tid].find(r => r.id === guest.gid && r.isGuest);
+                                                                if (guestResponse) {
+                                                                    availability = guestResponse.availability;
+                                                                }
+                                                            }
+                                                        %>
+                                                        <!-- Cellule colorée selon la disponibilité -->
+                                                        <td class="response-cell <%= availability %>">
+                                                            <% if (availability === 'available') { %>
+                                                                <i class="fas fa-check-circle"></i>
+                                                            <% } else if (availability === 'maybe') { %>
+                                                                <i class="fas fa-question-circle"></i>
+                                                            <% } else if (availability === 'unavailable') { %>
+                                                                <i class="fas fa-times-circle"></i>
+                                                            <% } else { %>
+                                                                <i class="fas fa-clock"></i>
+                                                            <% } %>
+                                                        </td>
+                                                    <% }); %>
+                                                </tr>
+                                            <% }); %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+
+                        <!-- 
+                        Boutons de réponse rapide pour les participants 
+                        Visible uniquement pour les participants (non organisateurs) et quand la réunion n'est pas confirmée
+                        -->
+                        <% if (meeting.uid !== user.uid && meeting.status !== 'confirmed') { %>
+                            <div class="info-section quick-respond-section">
+                            <h2><i class="fas fa-reply"></i> Répondre à l'invitation</h2>
+                            <div class="quick-response-options">
+                                <p class="response-prompt">Indiquer vos disponibilités pour cette réunion :</p>
+                                <a href="/meetings/<%= meeting.mid %>/respond" class="btn-respond">
+                                <i class="fas fa-calendar-check"></i> Répondre maintenant
+                                </a>
+                                
+                                <div class="response-status">
+                                <% if (userResponses && Object.keys(userResponses).length > 0) { %>
+                                    <p><i class="fas fa-info-circle"></i> Vous avez déjà répondu à <%= Object.keys(userResponses).length %> créneaux</p>
+                                <% } else { %>
+                                    <p><i class="fas fa-exclamation-circle"></i> Vous n'avez pas encore indiqué vos disponibilités</p>
+                                <% } %>
+                                </div>
+                            </div>
+                            </div>
+                        <% } %>
+
+                        <!-- 
+                          LISTE DES CRÉNEAUX DISPONIBLES
+                          Affiche chaque créneau proposé avec ses détails (date et heure)
+                        -->
                         <% timeSlots.forEach(slot => { %>
                             <div class="time-slot-item">
                                 <div class="slot-content">
+                                    <!-- Date au format long: ex. "Lundi 12 janvier 2023" -->
                                     <div class="date">
                                         <i class="fas fa-calendar-day"></i>
-                                        <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+                                        <%= new Date(slot.start_time).toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}) %>
                                     </div>
+                                    <!-- Heure de début et de fin: ex. "14:30 - 16:00" -->
                                     <div class="time">
                                         <i class="fas fa-clock"></i>
-                                        <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %> - 
-                                        <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+                                        <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %> - 
+                                        <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
                                     </div>
                                 </div>
+                                
+                                <!-- 
+                                  BOUTON DE CONFIRMATION (visible uniquement par l'organisateur)
+                                  Permet à l'organisateur de confirmer définitivement un créneau
+                                -->
+                                <% if (meeting.uid === user.uid) { %>
+                                    <form action="/meetings/<%= meeting.mid %>/confirm" method="POST" class="confirm-slot-form" style="display:inline;">
+                                        <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                        <button type="submit" class="btn-confirm-slot">
+                                            <i class="fas fa-check"></i> Confirmer ce créneau
+                                        </button>
+                                    </form>
+                                <% } %>
                             </div>
-                        <% }) %>
+                        <% }); %>
                     <% } else { %>
+                        <!-- Message affiché s'il n'y a aucun créneau proposé -->
                         <div class="no-slots">
                             <i class="fas fa-calendar-times"></i>
                             <p>Aucun créneau disponible</p>
                         </div>
                     <% } %>
                 </div>
+            <!-- 
+              Si la réunion est confirmée
+              Affiche uniquement le créneau définitif qui a été sélectionné
+            -->
+            <% } else { %>
+                <div class="confirmed-slot">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Créneau confirmé :</strong>
+                    <span>
+                        <!-- Date au format long -->
+                        <%= new Date(meeting.start_time).toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}) %>
+                        de
+                        <!-- Heure de début -->
+                        <%= new Date(meeting.start_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
+                        à
+                        <!-- Heure de fin -->
+                        <%= new Date(meeting.end_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
+                    </span>
+                </div>
+            <% } %>
+        </div>
 
-                <!-- Actions réservées à l'organisateur -->
-                <% if (meeting.uid===user.uid) { %>
-                    <div class="organizer-actions">
-                        <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
-                            <button type="submit" class="btn-reminder">
-                                <i class="fas fa-bell"></i> Envoyer un rappel aux participants
-                            </button>
-                        </form>
-                    </div>
-                <% } %>
+        <!-- 
+          SOUS-SECTION 2.3: ACTIONS POUR L'ORGANISATEUR
+          Actions additionnelles disponibles uniquement pour l'organisateur
+          et uniquement si la réunion n'est pas encore confirmée
+        -->
+        <% if (meeting.uid === user.uid && meeting.status !== 'confirmed') { %>
+            <div class="organizer-actions">
+                <!-- Bouton pour envoyer un rappel par email à tous les participants -->
+                <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
+                    <button type="submit" class="btn-reminder">
+                        <i class="fas fa-bell"></i> Envoyer un rappel aux participants
+                    </button>
+                </form>
             </div>
-        </div>
-
-        <!-- Lien de retour -->
-        <div class="back-link">
-            <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
-        </div>
+        <% } %>
     </div>
 
-    <%- include('../partials/footer') %>
+    <!-- Lien de retour vers la liste des réunions -->
+    <div class="back-link">
+        <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
+    </div>
+</div>
+
+<!-- Inclusion du pied de page commun (scripts JS, informations légales, etc.) -->
+<%- include('../partials/footer') %>
