@@ -176,8 +176,8 @@ router.post('/:mid/confirm', async (req, res) => {
 
   // Met à jour la réunion avec le créneau confirmé
   await pool.query(
-    'UPDATE meetings SET start_time = $1, end_time = $2 WHERE mid = $3',
-    [slot.start_time, slot.end_time, mid]
+    'UPDATE meetings SET start_time = $1, end_time = $2, status = $3 WHERE mid = $4',
+    [slot.start_time, slot.end_time, 'confirmed', mid]
   );
 
   //Notifier les participants 

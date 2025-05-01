@@ -157,40 +157,146 @@
                 <% if (meeting.status !=='confirmed' ) { %>
                     <div class="time-slots">
                         <% if (timeSlots && timeSlots.length> 0) { %>
-                            <% timeSlots.forEach(slot=> { %>
-                                <div class="time-slot-item">
-                                    <!--   contenu du créneau   -->
-                                    <div class="slot-content">
-                                        <div class="date">
-                                            <i class="fas fa-calendar-day"></i>
-                                            <%= new Date(slot.start_time).toLocaleDateString('fr-FR', { weekday: 'long'
-                                                , day: 'numeric' , month: 'long' , year: 'numeric' }) %>
-                                        </div>
-                                        <div class="time">
-                                            <i class="fas fa-clock"></i>
-                                            <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit'
-                                                , minute: '2-digit' }) %> -
-                                                <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', {
-                                                    hour: '2-digit' , minute: '2-digit' }) %>
-                                        </div>
-                                    </div>
-                                    <% if (meeting.uid===user.uid) { %>
-                                        <form action="/meetings/<%= meeting.mid %>/confirm" method="POST"
-                                            class="confirm-slot-form" style="display:inline;">
-                                            <input type="hidden" name="tid" value="<%= slot.tid %>">
-                                            <button type="submit" class="btn-confirm-slot">
-                                                <i class="fas fa-check"></i> Confirmer ce créneau
-                                            </button>
-                                        </form>
-                                        <% } %>
+                            <!-- Tableau des disponibilités (visible uniquement par l'organisateur) -->
+                            <% if (meeting.uid===user.uid) { %>
+                                <div class="availability-table-container">
+                                    <h3>Réponses des participants</h3>
+                                    <table class="availability-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Participant</th>
+                                                <% timeSlots.forEach(slot=> { %>
+                                                    <th>
+                                                        <%= new Date(slot.start_time).toLocaleDateString('fr-FR',
+                                                            {weekday: 'short' , day: 'numeric' , month: 'short' }) %>
+                                                            <br>
+                                                            <%= new Date(slot.start_time).toLocaleTimeString('fr-FR',
+                                                                {hour: '2-digit' , minute: '2-digit' }) %>
+                                                    </th>
+                                                    <% }) %>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (participants && participants.length> 0) { %>
+                                                <% participants.forEach(participant=> { %>
+                                                    <% if (participant.uid !==meeting.uid) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= participant.name %>
+                                                            </td>
+                                                            <% timeSlots.forEach(slot=> { %>
+                                                                <% let availability='pending' ; if (responses &&
+                                                                    responses[slot.tid]) { const
+                                                                    participantResponse=responses[slot.tid].find(r=>
+                                                                    r.id === participant.uid);
+                                                                    if (participantResponse) {
+                                                                    availability = participantResponse.availability;
+                                                                    }
+                                                                    }
+                                                                    %>
+                                                                    <td class="response-cell <%= availability %>">
+                                                                        <% if (availability==='available' ) { %>
+                                                                            <i class="fas fa-check-circle"></i>
+                                                                            <% } else if (availability==='maybe' ) { %>
+                                                                                <i class="fas fa-question-circle"></i>
+                                                                                <% } else if
+                                                                                    (availability==='unavailable' ) { %>
+                                                                                    <i class="fas fa-times-circle"></i>
+                                                                                    <% } else { %>
+                                                                                        <i class="fas fa-clock"></i>
+                                                                                        <% } %>
+                                                                    </td>
+                                                                    <% }) %>
+                                                        </tr>
+                                                        <% } %>
+                                                            <% }) %>
+                                                                <% } %>
+
+                                                                    <% if (guests && guests.length> 0) { %>
+                                                                        <% guests.forEach(guest=> { %>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <%= guest.name || guest.email %>
+                                                                                        (Invité)
+                                                                                </td>
+                                                                                <% timeSlots.forEach(slot=> { %>
+                                                                                    <% let availability='pending' ; if
+                                                                                        (responses &&
+                                                                                        responses[slot.tid]) { const
+                                                                                        guestResponse=responses[slot.tid].find(r=>
+                                                                                        r.id === guest.gid &&
+                                                                                        r.isGuest);
+                                                                                        if (guestResponse) {
+                                                                                        availability =
+                                                                                        guestResponse.availability;
+                                                                                        }
+                                                                                        }
+                                                                                        %>
+                                                                                        <td
+                                                                                            class="response-cell <%= availability %>">
+                                                                                            <% if
+                                                                                                (availability==='available'
+                                                                                                ) { %>
+                                                                                                <i
+                                                                                                    class="fas fa-check-circle"></i>
+                                                                                                <% } else if
+                                                                                                    (availability==='maybe'
+                                                                                                    ) { %>
+                                                                                                    <i
+                                                                                                        class="fas fa-question-circle"></i>
+                                                                                                    <% } else if
+                                                                                                        (availability==='unavailable'
+                                                                                                        ) { %>
+                                                                                                        <i
+                                                                                                            class="fas fa-times-circle"></i>
+                                                                                                        <% } else { %>
+                                                                                                            <i
+                                                                                                                class="fas fa-clock"></i>
+                                                                                                            <% } %>
+                                                                                        </td>
+                                                                                        <% }) %>
+                                                                            </tr>
+                                                                            <% }) %>
+                                                                                <% } %>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <% }) %>
-                                    <% } else { %>
-                                        <div class="no-slots">
-                                            <i class="fas fa-calendar-times"></i>
-                                            <p>Aucun créneau disponible</p>
+                                <% } %>
+
+                                    <% timeSlots.forEach(slot=> { %>
+                                        <div class="time-slot-item">
+                                            <div class="slot-content">
+                                                <div class="date">
+                                                    <i class="fas fa-calendar-day"></i>
+                                                    <%= new Date(slot.start_time).toLocaleDateString('fr-FR', {
+                                                        weekday: 'long' , day: 'numeric' , month: 'long' ,
+                                                        year: 'numeric' }) %>
+                                                </div>
+                                                <div class="time">
+                                                    <i class="fas fa-clock"></i>
+                                                    <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', {
+                                                        hour: '2-digit' , minute: '2-digit' }) %> -
+                                                        <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', {
+                                                            hour: '2-digit' , minute: '2-digit' }) %>
+                                                </div>
+                                            </div>
+                                            <% if (meeting.uid===user.uid) { %>
+                                                <form action="/meetings/<%= meeting.mid %>/confirm" method="POST"
+                                                    class="confirm-slot-form" style="display:inline;">
+                                                    <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                                    <button type="submit" class="btn-confirm-slot">
+                                                        <i class="fas fa-check"></i> Confirmer ce créneau
+                                                    </button>
+                                                </form>
+                                                <% } %>
                                         </div>
-                                        <% } %>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <div class="no-slots">
+                                                    <i class="fas fa-calendar-times"></i>
+                                                    <p>Aucun créneau disponible</p>
+                                                </div>
+                                                <% } %>
                     </div>
                     <% } else { %>
                         <div class="confirmed-slot">
@@ -208,24 +314,24 @@
                             </span>
                         </div>
                         <% } %>
-                            <!-- Actions réservées à l'organisateur -->
-                            <% if (meeting.uid===user.uid && meeting.status !=='confirmed' ) { %>
-                                <div class="organizer-actions">
-                                    <form action="/meetings/<%= meeting.mid %>/remind" method="POST"
-                                        class="reminder-form">
-                                        <button type="submit" class="btn-reminder">
-                                            <i class="fas fa-bell"></i> Envoyer un rappel aux participants
-                                        </button>
-                                    </form>
-                                </div>
-                                <% } %>
             </div>
+                <!-- Actions réservées à l'organisateur -->
+                <% if (meeting.uid===user.uid && meeting.status !=='confirmed' ) { %>
+                    <div class="organizer-actions">
+                        <form action="/meetings/<%= meeting.mid %>/remind" method="POST" class="reminder-form">
+                            <button type="submit" class="btn-reminder">
+                                <i class="fas fa-bell"></i> Envoyer un rappel aux participants
+                            </button>
+                        </form>
+                    </div>
+                    <% } %>
         </div>
+    </div>
 
-        <!-- Lien de retour -->
-        <div class="back-link">
-            <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
-        </div>
+    <!-- Lien de retour -->
+    <div class="back-link">
+        <a href="/meetings" class="btn-back">&larr; Retour aux réunions</a>
+    </div>
     </div>
 
     <%- include('../partials/footer') %>
