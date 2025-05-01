@@ -27,8 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
           body: formData
         });
 
-        const result = await res.text(); // Ou res.json() si le serveur répond en JSON
-        console.log(result); // Affiche le résultat de l'importation
+        const result = await res.text();
         window.location.href = result; // Redirige vers la page des réunions
       } catch (err) {
         console.error('Erreur lors de l’envoi du fichier :', err);
