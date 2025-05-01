@@ -1,34 +1,64 @@
 /**
  * Script principal de l'interface utilisateur
- * 
+ *
  * Ce module gère les interactions utilisateur pour les notifications,
  * la création de réunions et l'affichage du calendrier.
- * 
+ *
  * @module public/js/main
  */
+document.addEventListener("DOMContentLoaded", function() {
+  /**
+   * Gestion des importations de fichiers ICal
+   *
+   * Cette section gère l'importation de fichiers ICal pour importer des horaires et des réunions.
+   */
+  const importBtn = document.getElementById("import-ical");
+  if (importBtn) {
+    importBtn.addEventListener("change", async function() {
+      const file = this.files[0];
+      if (!file) return;
 
-document.addEventListener("DOMContentLoaded", function () {
+      const formData = new FormData();
+      formData.append('calendar', file);
+
+      try {
+        const res = await fetch('/import_meeting', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await res.text(); // Ou res.json() si le serveur répond en JSON
+        console.log(result); // Affiche le résultat de l'importation
+        window.location.href = result; // Redirige vers la page des réunions
+      } catch (err) {
+        console.error('Erreur lors de l’envoi du fichier :', err);
+      }
+    });
+  }
 
   /**
    * Gestion des notifications
-   * 
+   *
    * Cette section gère l'affichage et le marquage des notifications comme lues.
    */
 
-  const notificationsToggle = document.querySelector('.notifications-toggle');
-  const notificationsWrapper = document.querySelector('.notifications-wrapper');
-  const markReadButtons = document.querySelectorAll('.mark-read-btn');
+  const notificationsToggle = document.querySelector(".notifications-toggle");
+  const notificationsWrapper = document.querySelector(".notifications-wrapper");
+  const markReadButtons = document.querySelectorAll(".mark-read-btn");
 
   // Affichage/masquage du menu des notifications
   if (notificationsToggle) {
-    notificationsToggle.addEventListener('click', function () {
-      notificationsWrapper.classList.toggle('active');
+    notificationsToggle.addEventListener("click", function() {
+      notificationsWrapper.classList.toggle("active");
     });
 
     // Fermeture du menu des notifications en cliquant ailleurs
-    document.addEventListener('click', function (event) {
-      if (notificationsWrapper && !notificationsWrapper.contains(event.target)) {
-        notificationsWrapper.classList.remove('active');
+    document.addEventListener("click", function(event) {
+      if (
+        notificationsWrapper &&
+        !notificationsWrapper.contains(event.target)
+      ) {
+        notificationsWrapper.classList.remove("active");
       }
     });
   }
@@ -38,29 +68,34 @@ document.addEventListener("DOMContentLoaded", function () {
    * Envoie une requête au serveur et met à jour l'interface utilisateur
    */
   if (markReadButtons.length > 0) {
-    markReadButtons.forEach(button => {
-      button.addEventListener('click', async function (e) {
+    markReadButtons.forEach((button) => {
+      button.addEventListener("click", async function(e) {
         e.preventDefault();
-        const notificationId = this.getAttribute('data-nid');
+        const notificationId = this.getAttribute("data-nid");
 
         try {
           // Marquer la notification comme lue sur le serveur
-          const response = await fetch(`/notifications/${notificationId}/read`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+          const response = await fetch(
+            `/notifications/${notificationId}/read`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
 
           if (response.ok) {
             // Supprimer la notification de l'interface
-            const notificationItem = document.querySelector(`.notification-item[data-nid="${notificationId}"]`);
+            const notificationItem = document.querySelector(
+              `.notification-item[data-nid="${notificationId}"]`,
+            );
             if (notificationItem) {
               notificationItem.remove();
             }
 
             // Mise à jour du compteur de notifications
-            const badge = document.querySelector('.notification-badge');
+            const badge = document.querySelector(".notification-badge");
             if (badge) {
               const count = parseInt(badge.textContent) - 1;
               if (count <= 0) {
@@ -71,16 +106,24 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Afficher un message s'il n'y a plus de notifications
-            const notificationList = document.querySelector('.notification-list');
+            const notificationList =
+              document.querySelector(".notification-list");
             if (notificationList && notificationList.children.length === 0) {
-              const noNotifications = document.createElement('p');
-              noNotifications.className = 'no-notifications';
-              noNotifications.textContent = 'Vous n\'avez pas de nouvelles notifications';
-              notificationList.parentNode.replaceChild(noNotifications, notificationList);
+              const noNotifications = document.createElement("p");
+              noNotifications.className = "no-notifications";
+              noNotifications.textContent =
+                "Vous n'avez pas de nouvelles notifications";
+              notificationList.parentNode.replaceChild(
+                noNotifications,
+                notificationList,
+              );
             }
           }
         } catch (error) {
-          console.error('Erreur lors du marquage de la notification comme lue', error);
+          console.error(
+            "Erreur lors du marquage de la notification comme lue",
+            error,
+          );
         }
       });
     });
@@ -88,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /**
    * Gestion des formulaires de création de réunion
-   * 
+   *
    * Cette section gère l'ajout dynamique de créneaux horaires et de participants
    * lors de la création d'une nouvelle réunion.
    */
@@ -96,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Ajout dynamique de créneaux horaires
   const addTimeSlotBtn = document.getElementById("addTimeSlot");
   if (addTimeSlotBtn) {
-    addTimeSlotBtn.addEventListener("click", function () {
+    addTimeSlotBtn.addEventListener("click", function() {
       const timeSlots = document.getElementById("timeSlots");
       const newSlot = document.createElement("div");
       newSlot.className = "time-slot";
@@ -117,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Ajout dynamique de participants
   const addParticipantBtn = document.getElementById("addParticipant");
   if (addParticipantBtn) {
-    addParticipantBtn.addEventListener("click", function () {
+    addParticipantBtn.addEventListener("click", function() {
       const participants = document.getElementById("participants");
       const newParticipant = document.createElement("div");
       newParticipant.className = "participant";
@@ -133,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /**
    * Gestion de l'affichage du calendrier
-   * 
+   *
    * Cette section gère le basculement entre la vue liste et la vue calendrier,
    * ainsi que la navigation et le rendu du calendrier.
    */
@@ -148,14 +191,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Gestion du basculement entre vue liste et vue calendrier
   if (listBtn && calendarBtn) {
-    listBtn.addEventListener("click", function () {
+    listBtn.addEventListener("click", function() {
       listBtn.classList.add("active");
       calendarBtn.classList.remove("active");
       if (listView) listView.style.display = "block";
       if (calendarView) calendarView.style.display = "none";
     });
 
-    calendarBtn.addEventListener("click", function () {
+    calendarBtn.addEventListener("click", function() {
       calendarBtn.classList.add("active");
       listBtn.classList.remove("active");
       if (calendarView) calendarView.style.display = "block";
@@ -166,14 +209,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Navigation entre les mois du calendrier
     const prevBtn = document.getElementById("prev-month");
     if (prevBtn) {
-      prevBtn.addEventListener("click", function () {
+      prevBtn.addEventListener("click", function() {
         selectedDate.setMonth(selectedDate.getMonth() - 1);
         renderCalendar();
       });
     }
     const nextBtn = document.getElementById("next-month");
     if (nextBtn) {
-      nextBtn.addEventListener("click", function () {
+      nextBtn.addEventListener("click", function() {
         selectedDate.setMonth(selectedDate.getMonth() + 1);
         renderCalendar();
       });
@@ -182,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /**
    * Génère et affiche le calendrier pour le mois sélectionné
-   * 
+   *
    * Cette fonction crée une grille de calendrier avec les jours du mois
    * et affiche les réunions programmées aux dates correspondantes.
    */
