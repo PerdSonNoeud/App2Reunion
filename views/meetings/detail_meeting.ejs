@@ -326,6 +326,30 @@
                         <% } %>
 
                         <!-- 
+                        Boutons de réponse rapide pour les participants 
+                        Visible uniquement pour les participants (non organisateurs) et quand la réunion n'est pas confirmée
+                        -->
+                        <% if (meeting.uid !== user.uid && meeting.status !== 'confirmed') { %>
+                            <div class="info-section quick-respond-section">
+                            <h2><i class="fas fa-reply"></i> Répondre à l'invitation</h2>
+                            <div class="quick-response-options">
+                                <p class="response-prompt">Indiquer vos disponibilités pour cette réunion :</p>
+                                <a href="/meetings/<%= meeting.mid %>/respond" class="btn-respond">
+                                <i class="fas fa-calendar-check"></i> Répondre maintenant
+                                </a>
+                                
+                                <div class="response-status">
+                                <% if (userResponses && Object.keys(userResponses).length > 0) { %>
+                                    <p><i class="fas fa-info-circle"></i> Vous avez déjà répondu à <%= Object.keys(userResponses).length %> créneaux</p>
+                                <% } else { %>
+                                    <p><i class="fas fa-exclamation-circle"></i> Vous n'avez pas encore indiqué vos disponibilités</p>
+                                <% } %>
+                                </div>
+                            </div>
+                            </div>
+                        <% } %>
+
+                        <!-- 
                           LISTE DES CRÉNEAUX DISPONIBLES
                           Affiche chaque créneau proposé avec ses détails (date et heure)
                         -->

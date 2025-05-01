@@ -367,6 +367,60 @@
   .response-cell.pending i {
     color: #757575;
   }
+
+  /* ======================================
+   QUICK RESPOND SECTION STYLES
+   ====================================== */
+.quick-respond-section {
+  background-color: #f5f9ff;
+  border-left: 4px solid #77adf6;
+  margin-top: 2rem;
+}
+
+.quick-response-options {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.response-prompt {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+.btn-respond {
+  background-color: #77adf6;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.btn-respond i {
+  margin-right: 0.6rem;
+  font-size: 1.1rem;
+}
+
+.btn-respond:hover {
+  background-color: #5d96e3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(93, 150, 227, 0.3);
+}
+
+.response-status {
+  margin-top: 1.5rem;
+  color: #666;
+  font-style: italic;
+}
+
+.response-status i {
+  color: #77adf6;
+  margin-right: 0.4rem;
+}
   
   /* ======================================
      UTILITIES
