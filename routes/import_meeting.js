@@ -50,15 +50,14 @@ router.post("/", async (req, res) => {
     result = "Aucun fichier importé.";
   } else {
     data = ical.parseICS(req.files.calendar.data.toString("utf8"));
-    console.log(data);
     // Vérification du type de fichier
     const events = Object.values(data).filter(
       (item) => item.type === "VEVENT",
     );
     // Vérification de la présence d'événements
     events.forEach((event) => {
-      const startTime = new Date(event.start);
-      const endTime = new Date(event.end);
+      const startTime = new Date(event.start).toISOString().slice(0, 19).replace("T", " ");
+      const endTime = new Date(event.end).toISOString().slice(0, 19).replace("T", " ");
       
       // Insertion de la réunion dans la base de données
       pool.query(
@@ -69,7 +68,6 @@ router.post("/", async (req, res) => {
             console.error("Erreur lors de l'insertion de la réunion", error);
             string = "Erreur lors de l'insertion de la réunion.";
           }
-          console.log(result.rows[0].mid);
           mid = result.rows[0].mid;
 
           // Insertion des participants dans la base de données
@@ -88,7 +86,7 @@ router.post("/", async (req, res) => {
     });
   }
 
-  res.redirect("/meetings/?valid=" + string);
+  res.send("/meetings/?valid=" + string);
 });
 
 module.exports = router;

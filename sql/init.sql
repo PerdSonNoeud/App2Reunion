@@ -137,6 +137,11 @@ INSERT INTO meetings (title, description, start_time, end_time, uid) VALUES
 ('Project Kickoff', 'Initial meeting to discuss project scope', '2025-05-15 10:00:00', '2025-05-15 11:30:00', 1),
 ('Weekly Standup', 'Weekly team standup meeting', '2025-05-15 09:00:00', '2025-05-15 09:30:00', 1);
 
+-- Créneaux horaires de test
+INSERT INTO time_slots (mid, start_time, end_time) VALUES
+(1, '2025-05-15 10:00:00', '2025-05-15 11:30:00'), -- Créneau pour la réunion 1
+(2, '2025-05-15 09:00:00', '2025-05-15 09:30:00'); -- Créneau pour la réunion 2
+
 -- Participants aux réunions de test
 INSERT INTO participants (mid, uid) VALUES
 (1, 1), -- User User participe à la réunion 1 (Project Kickoff)
