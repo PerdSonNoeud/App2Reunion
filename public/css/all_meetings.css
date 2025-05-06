@@ -105,7 +105,8 @@
     gap: 10px;
 }
 
-.btn-view {
+.btn-view,
+.custom-upload {
     background-color: #f8f8f8;
     color: #666;
     padding: 0.5rem 1.2rem;
@@ -113,12 +114,17 @@
     border-radius: 20px;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .btn-view.active {
     background-color: #f6a0a0;
     color: white;
     box-shadow: 0 2px 5px rgba(246, 160, 160, 0.3);
+}
+
+input[type="file"] {
+  display: none;
 }
 
 .success-message {
