@@ -89,7 +89,7 @@
                 <!-- Si l'utilisateur est l'organisateur -->
                 <% if (meeting.uid === user.uid) { %>
                     <div class="status-tag organizer">
-                        <i class="fas fa-crown"></i> Organisateur
+                        <i class="fas fa-crown"></i> <p> Organisateur </p>
                     </div>
                 <!-- Si l'utilisateur est un participant -->
                 <% } else { %>
@@ -110,15 +110,15 @@
                     <!-- Affichage du statut avec l'icône et la couleur appropriées -->
                     <% if (participantStatus === 'confirmed') { %>
                         <div class="status-tag confirmed">
-                            <i class="fas fa-check-circle"></i> Confirmé
+                            <i class="fas fa-check-circle"></i> <p> Confirmé </p>
                         </div>
                     <% } else if (participantStatus === 'declined') { %>
                         <div class="status-tag declined">
-                            <i class="fas fa-times-circle"></i> Décliné
+                            <i class="fas fa-times-circle"></i> <p> Décliné </p>
                         </div>
                     <% } else { %>
                         <div class="status-tag pending">
-                            <i class="fas fa-clock"></i> En attente de réponse
+                            <i class="fas fa-clock"></i> <p> En attente de réponse </p>
                         </div>
                     <% } %>
                 <% } %>
@@ -147,11 +147,11 @@
                                 -->
                                 <% if (participant.uid !== meeting.uid) { %>
                                     <% if (participant.status === 'confirmed') { %>
-                                        <span class="status-tag confirmed">Confirmé</span>
+                                        <span class="status-tag confirmed"><i class="fas fa-check-circle"></i></span>
                                     <% } else if (participant.status === 'declined') { %>
-                                        <span class="status-tag declined">Décliné</span>
+                                        <span class="status-tag declined"><i class="fas fa-times-circle"></i></span>
                                     <% } else { %>
-                                        <span class="status-tag pending">En attente de réponse</span>
+                                        <span class="status-tag pending"><i class="fas fa-clock"></i></span>
                                     <% } %>
                                 <% } %>
                             </li>
@@ -170,11 +170,11 @@
                                 
                                 <!-- Statut de participation pour les invités -->
                                 <% if (guest.status === 'confirmed') { %>
-                                    <span class="status-tag confirmed">Confirmé</span>
+                                    <span class="status-tag confirmed"><i class="fas fa-check-circle"></i></span>
                                 <% } else if (guest.status === 'declined') { %>
-                                    <span class="status-tag declined">Décliné</span>
+                                    <span class="status-tag declined"><i class="fas fa-times-circle"></i></span>
                                 <% } else { %>
-                                    <span class="status-tag pending">En attente de réponse</span>
+                                    <span class="status-tag pending"><i class="fas fa-clock"></i></span>
                                 <% } %>
                             </li>
                         <% }); %>
@@ -377,7 +377,7 @@
                                     <form action="/meetings/<%= meeting.mid %>/confirm" method="POST" class="confirm-slot-form" style="display:inline;">
                                         <input type="hidden" name="tid" value="<%= slot.tid %>">
                                         <button type="submit" class="btn-confirm-slot">
-                                            <i class="fas fa-check"></i> Confirmer ce créneau
+                                            <i class="fas fa-check"></i> Confirmer
                                         </button>
                                     </form>
                                 <% } %>

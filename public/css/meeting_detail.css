@@ -58,6 +58,12 @@
 }
 
 .btn-edit,
+.btn-delete,
+.btn-confirm-slot {
+  font-size: 0.8rem;
+}
+
+.btn-edit,
 .btn-reminder {
   background-color: #f6a0a0;
   color: white;
@@ -195,29 +201,30 @@
   border-radius: 6px;
   font-weight: 600;
   margin-top: 0.5rem;
+  color: white;
 }
 
-.status-tag i {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
+.status-tag p {
+  padding-left: 0.5rem;
+  color: white;
 }
 
 .status-tag.organizer {
   background-color: #b19cd9;
-  color: white;
 }
 
-.status-tag.confirmed {
+.status-tag.confirmed,
+.status-tag.confirmed p {
   background-color: #77dd77;
-  color: white;
 }
 
-.status-tag.declined {
+.status-tag.declined,
+.status-tag.declined p {
   background-color: #ff6b6b;
-  color: white;
 }
 
-.status-tag.pending {
+.status-tag.pending,
+.status-tag.pending p {
   background-color: #ffd166;
   color: #333;
 }
@@ -240,6 +247,7 @@
   margin-bottom: 0.5rem;
   background-color: white;
   border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 .participant-status {
