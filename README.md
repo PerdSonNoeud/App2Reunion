@@ -94,7 +94,7 @@ L'application sera accessible à l'adresse: [http://localhost:3000](http://local
 
 ## 📁 Structure du projet
 
-```
+```bash
 projet-web-2024-2025/
 ├── config/             # Configuration (base de données, etc.)
 ├── public/             # Fichiers statiques (CSS, JS, images)
