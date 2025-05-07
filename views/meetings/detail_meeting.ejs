@@ -296,7 +296,7 @@
                                                             let availability = 'pending';
                                                             
                                                             // Recherche de la réponse de l'invité pour ce créneau
-                                                            // Note: pour les invités, on utilise gid (guest ID) au lieu de uid
+                                                            // PS: pour les invités, on utilise gid (guest ID) au lieu de uid
                                                             if (responses && responses[slot.tid]) {
                                                                 const guestResponse = responses[slot.tid].find(r => r.id === guest.gid && r.isGuest);
                                                                 if (guestResponse) {
@@ -326,48 +326,55 @@
                         <% } %>
 
                         <!-- 
-                        Boutons de réponse rapide pour les participants 
-                        Visible uniquement pour les participants (non organisateurs) et quand la réunion n'est pas confirmée
-                        -->
-                        <% if (meeting.uid !== user.uid && meeting.status !== 'confirmed') { %>
-                            <div class="info-section quick-respond-section">
-                            <h2><i class="fas fa-reply"></i> Répondre à l'invitation</h2>
-                            <div class="quick-response-options">
-                                <p class="response-prompt">Indiquer vos disponibilités pour cette réunion :</p>
-                                <a href="/meetings/<%= meeting.mid %>/respond" class="btn-respond">
-                                <i class="fas fa-calendar-check"></i> Répondre maintenant
-                                </a>
-                                
-                                <div class="response-status">
-                                <% if (userResponses && Object.keys(userResponses).length > 0) { %>
-                                    <p><i class="fas fa-info-circle"></i> Vous avez déjà répondu à <%= Object.keys(userResponses).length %> créneaux</p>
-                                <% } else { %>
-                                    <p><i class="fas fa-exclamation-circle"></i> Vous n'avez pas encore indiqué vos disponibilités</p>
-                                <% } %>
-                                </div>
-                            </div>
-                            </div>
-                        <% } %>
-
-                        <!-- 
                           LISTE DES CRÉNEAUX DISPONIBLES
                           Affiche chaque créneau proposé avec ses détails (date et heure)
                         -->
                         <% timeSlots.forEach(slot => { %>
                             <div class="time-slot-item">
-                                <div class="slot-content">
-                                    <!-- Date au format long: ex. "Lundi 12 janvier 2023" -->
-                                    <div class="date">
+                                    <div class="slot-content">
+                                      <!-- Date au format long: ex. "Lundi 12 janvier 2023" -->
+                                      <div class="date">
                                         <i class="fas fa-calendar-day"></i>
                                         <%= new Date(slot.start_time).toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}) %>
-                                    </div>
-                                    <!-- Heure de début et de fin: ex. "14:30 - 16:00" -->
-                                    <div class="time">
+                                      </div>
+                                      <!-- Heure de début et de fin: ex. "14:30 - 16:00" -->
+                                      <div class="time">
                                         <i class="fas fa-clock"></i>
                                         <%= new Date(slot.start_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %> - 
                                         <%= new Date(slot.end_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
+                                      </div>
+
+                                <!-- 
+                                  BOUTONS DE RÉPONSE (visible uniquement par les participants)
+                                  Permet aux participants de répondre à la proposition de créneau, directement depuis la liste
+                                -->
+                                <% if (meeting.uid !== user.uid && meeting.status !== 'confirmed') { %>
+                                    <div class="direct-response-buttons">
+                                      <form action="/meetings/<%= meeting.mid %>/respond-direct" method="POST" class="direct-response-form">
+                                        <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                        <input type="hidden" name="availability" value="available">
+                                        <button type="submit" class="emoji-btn <%= userResponses[slot.tid] === 'available' ? 'active' : '' %>" title="Disponible">
+                                          ✅
+                                        </button>
+                                      </form>
+                                      
+                                      <form action="/meetings/<%= meeting.mid %>/respond-direct" method="POST" class="direct-response-form">
+                                        <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                        <input type="hidden" name="availability" value="maybe">
+                                        <button type="submit" class="emoji-btn <%= userResponses[slot.tid] === 'maybe' ? 'active' : '' %>" title="Peut-être">
+                                          🕐
+                                        </button>
+                                      </form>
+                                      
+                                      <form action="/meetings/<%= meeting.mid %>/respond-direct" method="POST" class="direct-response-form">
+                                        <input type="hidden" name="tid" value="<%= slot.tid %>">
+                                        <input type="hidden" name="availability" value="unavailable">
+                                        <button type="submit" class="emoji-btn <%= userResponses[slot.tid] === 'unavailable' ? 'active' : '' %>" title="Indisponible">
+                                          ❌
+                                        </button>
+                                      </form>
                                     </div>
-                                </div>
+                                  <% } %>
                                 
                                 <!-- 
                                   BOUTON DE CONFIRMATION (visible uniquement par l'organisateur)

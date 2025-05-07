@@ -310,6 +310,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .time-slot-item:hover {
@@ -464,6 +465,55 @@
   text-align: center;
 }
 
+
+/* ======================================
+     DIRECT RESPONSE BUTTONS
+     ====================================== */
+.direct-response-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.direct-response-form {
+  display: inline;
+}
+
+.emoji-btn {
+  font-size: 1.5rem;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.1);
+  background-color: #f0f0f0;
+}
+
+.emoji-btn[value="available"].active {
+  border-color: #77dd77;
+  box-shadow: 0 0 5px rgba(119, 221, 119, 0.5);
+}
+
+.emoji-btn[value="maybe"].active {
+  border-color: #ffd166;
+  box-shadow: 0 0 5px rgba(255, 209, 102, 0.5);
+}
+
+.emoji-btn[value="unavailable"].active {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
 /* ======================================
      RESPONSIVE STYLES
      ====================================== */
@@ -508,6 +558,12 @@
 
   .info-section h2 {
     font-size: 1.2rem;
+  }
+
+  .direct-response-buttons {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
   }
 }
 
