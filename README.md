@@ -100,6 +100,7 @@ projet-web-2024-2025/
 ├── public/             # Fichiers statiques (CSS, JS, images)
 ├── routes/             # Routes de l'application
 ├── sql/                # Scripts SQL
+├── test/               # Tests de l'application
 ├── views/              # Templates EJS
 ├── .env                # Variables d'environnement (non versionné)
 ├── .gitignore          # Fichiers ignorés par Git
