@@ -74,7 +74,7 @@ router.post("/", async (req, res) => {
           pool.query(
             "INSERT INTO participants (mid, uid) VALUES ($1, $2)",
             [mid, req.session.user.uid],
-            (error, result) => {
+            (error) => {
               if (error) {
                 console.error("Erreur lors de l'insertion du participant", error);
                 string = "Erreur lors de l'insertion du participant.";
