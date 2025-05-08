@@ -27,55 +27,60 @@
     <!-- Formulaire principal avec POST vers /new_meeting -->
     <form id="createMeetingForm" action="/new_meeting" method="POST">
         <!-- Informations générales de la réunion -->
-        <div class="form-group">
-            <label for="title">Titre de la réunion</label>
-            <input type="text" id="title" name="title" class="form-control" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" class="form-control" rows="3"></textarea>
-        </div>
-        
-        <div class="form-group">
-            <label for="location">Lieu</label>
-            <input type="text" id="location" name="location" class="form-control">
-        </div>
-        
-        <!-- Section des créneaux horaires proposés -->
-        <h2>Créneaux horaires</h2>
-        <div id="timeSlots">
-            <!-- Premier créneau horaire (obligatoire) -->
-            <div class="time-slot">
-                <div class="form-group">
-                    <label>Date et heure de début</label>
-                    <input type="datetime-local" name="startTime[]" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Date et heure de fin</label>
-                    <input type="datetime-local" name="endTime[]" class="form-control" required>
-                </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" id="title" name="title" class="form-control"
+                       placeholder="Titre de la réunion" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="location" name="location" class="form-control"
+                       placeholder="Lieu de la réunion (Optionnel)">
             </div>
         </div>
-        
-        <!-- Bouton pour ajouter dynamiquement d'autres créneaux -->
-        <button type="button" id="addTimeSlot" class="btn-secondary">+ Ajouter un créneau</button>
-        
-        <!-- Section des participants à inviter -->
-        <h2>Participants</h2>
-        <div id="participants">
-            <!-- Premier participant (obligatoire) -->
-            <div class="participant">
-                <div class="form-group">
-                    <label>Email du participant</label>
-                    <input type="email" name="participantEmail[]" class="form-control" required>
+
+        <div class="form-group">
+            <textarea id="description" name="description" class="form-control"
+                      rows="3" placeholder="Description de la réunion (Optionnel)"></textarea>
+        </div>
+            <div class="form-group">
+                <!-- Section des participants à inviter -->
+                <h2>Participants</h2>
+                <div id="participants">
+                    <!-- Premier participant (obligatoire) -->
+                    <div class="participant">
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <label for="tags" class="form-label">Emails des participants</label>
+                                <input id="tags" class="form-control" name="participantEmail[]" placeholder="Ajouter des emails">
+                                <!-- Message d'erreur pour les emails invalides -->
+                                <div id="error" class="text-danger mt-2"></div>
+                                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+                                <!-- Script pour ajouter les tags -->
+                                <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Bouton pour ajouter dynamiquement d'autres participants -->
-        <button type="button" id="addParticipant" class="btn-secondary">+ Ajouter un participant</button>
-        
+            <div class="form-group">
+                <!-- Section des créneaux horaires proposés -->
+                <h2>Créneaux horaires</h2>
+                <div id="timeSlots">
+                    <!-- Premier créneau horaire (obligatoire) -->
+                    <div class="time-slot">
+                        <div class="form-group">
+                            <label>Date et heure de début</label>
+                            <input type="datetime-local" name="startTime[]" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date et heure de fin</label>
+                            <input type="datetime-local" name="endTime[]" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bouton pour ajouter dynamiquement d'autres créneaux -->
+                <button type="button" id="addTimeSlot" class="btn-secondary">+ Ajouter un créneau</button>
+            </div>
         <!-- Bouton de soumission du formulaire -->
         <div class="form-group mt-4">
             <button type="submit" class="btn">Créer la réunion</button>

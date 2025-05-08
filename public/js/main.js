@@ -155,21 +155,29 @@ document.addEventListener("DOMContentLoaded", function() {
       timeSlots.appendChild(newSlot);
     });
   }
+  const input = document.querySelector('input[name="participantEmail[]"]');
+  if (input) {
+    new Tagify(input);
 
-  // Ajout dynamique de participants
-  const addParticipantBtn = document.getElementById("addParticipant");
-  if (addParticipantBtn) {
-    addParticipantBtn.addEventListener("click", function() {
-      const participants = document.getElementById("participants");
-      const newParticipant = document.createElement("div");
-      newParticipant.className = "participant";
-      newParticipant.innerHTML = `
-        <div class="form-group">
-          <label>Email du participant</label>
-          <input type="email" name="participantEmail[]" class="form-control" required>
-        </div>
-      `;
-      participants.appendChild(newParticipant);
+    const form = document.getElementById('createMeetingForm');
+    const errorDiv = document.getElementById('error');
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    form.addEventListener('submit', function (e) {
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      const tags = JSON.parse(data['participantEmail[]']);
+      const invalidEmails = tags.filter(tag => !isValidEmail(tag.value));
+
+      if (invalidEmails.length > 0) {
+        e.preventDefault(); // prevent form submission
+        errorDiv.textContent = "Invalid emails: " + invalidEmails.map(t => t.value).join(', ');
+      } else {
+        // convert array into JSON string before submitting (optional for backend parsing)
+        errorDiv.textContent = ""; // clear previous error
+      }
     });
   }
 
