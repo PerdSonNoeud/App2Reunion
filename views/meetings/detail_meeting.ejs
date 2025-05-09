@@ -330,7 +330,14 @@
                           Affiche chaque créneau proposé avec ses détails (date et heure)
                         -->
                         <% timeSlots.forEach(slot => { %>
-                            <div class="time-slot-item">
+                            <% 
+                                // Détermine la classe de sélection en fonction de la réponse de l'utilisateur
+                                let selectionClass = '';
+                                if (userResponses && userResponses[slot.tid]) {
+                                    selectionClass = 'selected-' + userResponses[slot.tid];
+                                }
+                            %>
+                            <div class="time-slot-item" <%= selectionClass %>">
                                 <div class="slot-content">
                                     <!-- Date au format long: ex. "Lundi 12 janvier 2023" -->
                                     <div class="date">

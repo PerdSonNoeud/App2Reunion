@@ -182,6 +182,42 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   /**
+   * Gestion des réponses directes aux créneaux
+   * 
+   * Met à jour l'interface utilisateur lorsqu'un utilisateur répond directement
+   * à un créneau depuis la page de détail
+   */
+  const directResponseForms = document.querySelectorAll('.direct-response-form');
+  if (directResponseForms.length > 0) {
+    directResponseForms.forEach(form => {
+      const submitButton = form.querySelector('button');
+      if (!submitButton) return;
+
+      submitButton.addEventListener('click', function() {
+        // Récupérer l'ID du créneau et la disponibilité
+        const tid = form.querySelector('input[name="tid"]').value;
+        const availability = form.querySelector('input[name="availability"]').value;
+        
+        // Trouver l'item de créneau parent
+        const timeSlotItem = this.closest('.time-slot-item');
+        if (timeSlotItem) {
+          // Supprimer toutes les classes de sélection précédentes
+          timeSlotItem.classList.remove('selected-available', 'selected-maybe', 'selected-unavailable');
+          // Ajouter la nouvelle classe de sélection
+          timeSlotItem.classList.add('selected-' + availability);
+          
+          // Activer uniquement le bouton sélectionné dans ce groupe
+          const allButtons = timeSlotItem.querySelectorAll('.emoji-btn');
+          allButtons.forEach(btn => {
+            btn.classList.remove('selected');
+          });
+          this.classList.add('selected');
+        }
+      });
+    });
+  }
+
+  /**
    * Gestion de l'affichage du calendrier
    *
    * Cette section gère le basculement entre la vue liste et la vue calendrier,
@@ -331,5 +367,67 @@ document.addEventListener("DOMContentLoaded", function() {
 
       calendarGrid.appendChild(dayCell);
     }
+  }
+
+
+  /**
+   * Gestion de la sélection dans les formulaires de réponse
+   * 
+   * Met à jour visuellement les time-slots en fonction des choix de l'utilisateur
+   */
+  const responseRadios = document.querySelectorAll('.response-option input[type="radio"]');
+  if (responseRadios.length > 0) {
+    responseRadios.forEach(radio => {
+      // Initialisation des classes sur chargement de la page
+      if (radio.checked) {
+        const timeSlot = radio.closest('.time-slot');
+        if (timeSlot) {
+          updateTimeSlotClass(timeSlot, radio.value);
+        }
+      }
+      
+      radio.addEventListener('change', function() {
+        const timeSlot = this.closest('.time-slot');
+        if (timeSlot) {
+          updateTimeSlotClass(timeSlot, this.value);
+        }
+      });
+    });
+  }
+  
+  /**
+   * Gestion de la sélection dans les formulaires de réponse
+   * 
+   * Met à jour visuellement les time-slots en fonction des choix de l'utilisateur
+   */
+  const responseRadios1 = document.querySelectorAll('.response-option input[type="radio"]');
+  if (responseRadios1.length > 0) {
+    responseRadios1.forEach(radio => {
+      // Initialisation des classes sur chargement de la page
+      if (radio.checked) {
+        const timeSlot = radio.closest('.time-slot');
+        if (timeSlot) {
+          updateTimeSlotClass(timeSlot, radio.value);
+        }
+      }
+      
+      radio.addEventListener('change', function() {
+        const timeSlot = this.closest('.time-slot');
+        if (timeSlot) {
+          updateTimeSlotClass(timeSlot, this.value);
+        }
+      });
+    });
+  }
+  
+  /**
+   * Met à jour la classe du time-slot en fonction de la réponse choisie
+   * 
+   * @param {HTMLElement} timeSlot - L'élément time-slot à mettre à jour
+   * @param {string} availability - La disponibilité choisie (available, maybe, unavailable)
+   */
+  function updateTimeSlotClass(timeSlot, availability) {
+    timeSlot.classList.remove('has-response-available', 'has-response-maybe', 'has-response-unavailable');
+    timeSlot.classList.add('has-response-' + availability);
   }
 });

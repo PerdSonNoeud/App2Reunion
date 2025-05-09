@@ -318,6 +318,18 @@
   transform: translateY(-2px);
 }
 
+.time-slot-item.selected-available {
+  border-left: 4px solid #77dd77;
+}
+
+.time-slot-item.selected-maybe {
+  border-left: 4px solid #ffd166;
+}
+
+.time-slot-item.selected-unavailable {
+  border-left: 4px solid #ff6b6b;
+}
+
 /* ======================================
      AVAILABILITY TABLE STYLES
      ====================================== */
@@ -512,6 +524,38 @@
 .emoji-btn[value="unavailable"].active {
   border-color: #ff6b6b;
   box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
+.direct-response-buttons {
+  display: flex;
+}
+
+.direct-response-form {
+  margin-right: 8px;
+}
+
+.emoji-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.2);
+}
+
+.emoji-btn.active {
+  border-color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.emoji-btn.selected {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ======================================
