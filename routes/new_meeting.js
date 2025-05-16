@@ -51,12 +51,25 @@ router.get('/', isAuthenticated, (req, res) => {
 router.post('/', isAuthenticated, async (req, res) => {
   const { title, description, location, startTime, endTime, participantEmail, participantName } = req.body;
   const userId = req.session.user.uid;
-  
+
   // Validation de base
   if (!title || !startTime || !endTime || startTime.length === 0 || endTime.length === 0) {
     return res.status(400).send('Veuillez remplir tous les champs obligatoires');
   }
-  
+
+  const values = JSON
+      .parse(participantEmail[0])
+      .map(tag => tag.value);
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  const invalidEmails = values.filter(tag => !isValidEmail(tag));
+  if (invalidEmails.length > 0) {
+    return;
+  }
+
   try {
     // Démarrer une transaction
     await pool.query('BEGIN');
@@ -94,9 +107,9 @@ router.post('/', isAuthenticated, async (req, res) => {
     const organizerName = organizerResult.rows[0].name;
     
     // Inviter les participants
-    if (participantEmail && Array.isArray(participantEmail)) {
-      for (let i = 0; i < participantEmail.length; i++) {
-        const email = participantEmail[i];
+    if (values && Array.isArray(values)) {
+      for (let i = 0; i < values.length; i++) {
+        const email = values[i];
         if (!email) continue;
         
         // Vérifier si l'utilisateur est déjà enregistré

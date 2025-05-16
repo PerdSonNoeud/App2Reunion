@@ -148,6 +148,10 @@ INSERT INTO participants (mid, uid) VALUES
 (2, 1), -- User User participe à la réunion 2 (Weekly Standup)
 (1, 2); -- Christophe Jin participe à la réunion 1 (Project Kickoff)
 
+-- Participants invités sans compte
+INSERT INTO guest_participants (mid, email, token) VALUES
+(1, 'matheo.piget5@gmail.com', 'token1'); -- Matheo Piget est invité à la réunion 1 (Project Kickoff)
+
 -- =============================================================================
 -- Configuration de la gestion des sessions
 -- =============================================================================

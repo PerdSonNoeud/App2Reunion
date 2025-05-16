@@ -1,0 +1,227 @@
+/* Styles généraux pour le conteneur de réponse */
+.respond-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Style des titres */
+.respond-container h1 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+    text-align: center;
+}
+
+.respond-container h2 {
+    color: #3498db;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.respond-container h3 {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    margin: 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+/* Informations de réunion */
+.meeting-info {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.description {
+    font-style: italic;
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+}
+
+/* Styles pour les créneaux horaires */
+.time-slots {
+    margin-bottom: 2rem;
+}
+
+.time-slot {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.time-slot:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Informations du créneau */
+.slot-info {
+    margin-bottom: 1rem;
+}
+
+.slot-date {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.slot-time {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+/* Options de réponse */
+.slot-responses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.8rem;
+}
+
+.response-option {
+    position: relative;
+}
+
+.response-option input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+}
+
+.response-option label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    text-align: center;
+    height: 100%;
+    min-height: 44px;
+}
+
+/* Couleurs pour les différentes options */
+.response-option label.available {
+    background-color: rgba(119, 221, 119, 0.2);
+    color: #2a9d2a;
+}
+
+.response-option label.maybe {
+    background-color: rgba(255, 209, 102, 0.2);
+    color: #ff8f00;
+}
+
+.response-option label.unavailable {
+    background-color: rgba(255, 107, 107, 0.2);
+    color: #d32f2f;
+}
+
+/* Hover effects */
+.response-option label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style quand l'option est sélectionnée */
+.response-option input[type="radio"]:checked + label {
+    border-color: currentColor;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+
+/* Style pour le time-slot avec une réponse sélectionnée */
+.time-slot.has-response-available {
+    border-left: 4px solid #77dd77;
+}
+
+.time-slot.has-response-maybe {
+    border-left: 4px solid #ffd166;
+}
+
+.time-slot.has-response-unavailable {
+    border-left: 4px solid #ff6b6b;
+}
+
+/* Style du message quand aucun créneau n'est proposé */
+.no-slots {
+    padding: 2rem;
+    text-align: center;
+    color: #7f8c8d;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    font-style: italic;
+}
+
+/* Boutons d'action */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    background-color: #ecf0f1;
+    color: #7f8c8d;
+}
+
+.btn-secondary:hover {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+    transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .slot-responses {
+        grid-template-columns: 1fr;
+    }
+    
+    .time-slot {
+        padding: 0.8rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+}

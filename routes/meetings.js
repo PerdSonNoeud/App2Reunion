@@ -149,6 +149,137 @@ router.get('/guest/:token', async (req, res) => {
 });
 
 /**
+ * Traite les réponses directes des utilisateurs depuis la page de détail
+ * 
+ * @route POST /meetings/:id/respond-direct
+ * @param {Request} req - Requête Express
+ * @param {Response} res - Réponse Express
+ */
+router.post('/:id/respond-direct', isAuthenticated, async (req, res) => {
+  const meetingId = req.params.id;
+  const userId = req.session.user.uid;
+  const { tid, availability } = req.body;
+  
+  // Vérifier que le créneau et la disponibilité sont spécifiés
+  if (!tid || !availability) {
+    return res.status(400).send('Paramètres manquants');
+  }
+  
+  try {
+    // Vérifier que l'utilisateur est participant à cette réunion
+    const participantResult = await pool.query(
+      'SELECT * FROM participants WHERE mid = $1 AND uid = $2',
+      [meetingId, userId]
+    );
+    
+    if (participantResult.rows.length === 0) {
+      return res.status(403).render('pages/error', {
+        title: 'Accès refusé',
+        user: req.session.user,
+        message: "Vous n'êtes pas autorisé à répondre à cette réunion"
+      });
+    }
+
+    // Vérifier que le créneau appartient à cette réunion
+    const timeSlotResult = await pool.query(
+      'SELECT * FROM time_slots WHERE tid = $1 AND mid = $2',
+      [tid, meetingId]
+    );
+
+    if (timeSlotResult.rows.length === 0) {
+      return res.status(400).send('Créneau invalide');
+    }
+
+    // Démarrer une transaction
+    await pool.query('BEGIN');
+    
+    // Vérifier si une réponse existe déjà
+    const existingResponse = await pool.query(
+      'SELECT rid FROM responses WHERE tid = $1 AND uid = $2',
+      [tid, userId]
+    );
+    
+    // Mettre à jour ou insérer la réponse
+    if (existingResponse.rows.length > 0) {
+      await pool.query(
+        'UPDATE responses SET availability = $1 WHERE tid = $2 AND uid = $3',
+        [availability, tid, userId]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO responses (tid, uid, availability) VALUES ($1, $2, $3)',
+        [tid, userId, availability]
+      );
+    }
+    
+    // Mettre à jour le statut du participant
+    let allUnavailable = true;
+    
+    // Vérifier si toutes les réponses sont "indisponible"
+    const responsesResult = await pool.query(
+      `SELECT availability FROM responses r
+       JOIN time_slots ts ON r.tid = ts.tid
+       WHERE ts.mid = $1 AND r.uid = $2`,
+      [meetingId, userId]
+    );
+    
+    // Vérifier si l'utilisateur a au moins une disponibilité
+    for (const row of responsesResult.rows) {
+      if (row.availability === 'available' || row.availability === 'maybe') {
+        allUnavailable = false;
+        break;
+      }
+    }
+    
+    // Mettre à jour le statut du participant en fonction des réponses
+    if (allUnavailable) {
+      await pool.query(
+        'UPDATE participants SET status = $1 WHERE mid = $2 AND uid = $3',
+        ['declined', meetingId, userId]
+      );
+      
+      // Notifier l'organisateur 
+      const meetingResult = await pool.query(
+        'SELECT m.title, u.uid FROM meetings m JOIN users u ON m.uid = u.uid WHERE m.mid = $1',
+        [meetingId]
+      );
+      
+      if (meetingResult.rows.length > 0) {
+        const meeting = meetingResult.rows[0];
+        const organizerUid = meeting.uid;
+        const userName = req.session.user.name;
+        
+        if (organizerUid !== userId) {
+          await notificationService.createNotification(
+            organizerUid,
+            meetingId,
+            `${userName} a décliné tous les créneaux pour "${meeting.title}"`,
+            'decline'
+          );
+        }
+      }
+    } else {
+      await pool.query(
+        'UPDATE participants SET status = $1 WHERE mid = $2 AND uid = $3',
+        ['confirmed', meetingId, userId]
+      );
+    }
+    
+    // Valider la transaction
+    await pool.query('COMMIT');
+    
+    // Rediriger vers la page de détails avec un paramètre pour éviter les problèmes de cache
+    res.redirect(`/meetings/${meetingId}?updated=${Date.now()}`);
+    
+  } catch (error) {
+    // Annuler la transaction en cas d'erreur
+    await pool.query('ROLLBACK');
+    console.error('Erreur lors de l\'enregistrement de la réponse directe', error);
+    return res.status(500).send('Erreur serveur');
+  }
+});
+
+/**
  * Route pour confirmer le créneau choisi par l'organisateur
  * 
  * @route POST /meetings/:mid/confirm

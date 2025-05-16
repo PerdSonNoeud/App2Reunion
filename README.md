@@ -1,11 +1,10 @@
-# Application de Gestion de Réunions
+# 📅 Application de Gestion de Réunions
 
 Une application web moderne pour planifier et gérer des réunions collaborativement. Trouvez facilement des créneaux qui conviennent à tous les participants, sans les tracas des échanges d'emails interminables.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Node.js](https://img.shields.io/badge/Node.js-14+-green.svg)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/jinc/projet-web-2024-2025)
+[![Node.js](https://img.shields.io/badge/Node.js-14+-green.svg)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)](https://www.postgresql.org/)
 
 ## 🚀 Fonctionnalités
 
@@ -18,9 +17,11 @@ Une application web moderne pour planifier et gérer des réunions collaborative
 
 ## 🛠️ Technologies utilisées
 
-- **Backend**: Node.js, Express.js
-- **Frontend**: HTML5, CSS3, JavaScript, EJS
-- **Base de données**: PostgreSQL
+| Type | Technologies |
+|------|-------------|
+| **Backend** | Node.js, Express.js |
+| **Frontend** | HTML5, CSS3, JavaScript, EJS |
+| **Base de données** | PostgreSQL |
 
 ## 📋 Prérequis
 
@@ -57,15 +58,33 @@ psql -U postgres -c "CREATE DATABASE reunion;"
 psql -U postgres -d reunion -f sql/init.sql
 ```
 
+3. **Configurer les variables d'environnement**
+
+Créez un fichier `.env` à la racine du projet avec ces variables:
+
+```env
+DB_NAME='reunion'
+DB_USER='postgres'
+DB_PASSWORD=your_password
+DB_HOST='localhost'
+DB_PORT=5432
+EMAIL_SERVICE=your_email_service
+EMAIL_USER=your_email
+EMAIL_PASSWORD=your_app_password
+BASE_URL='http://localhost:3000'
+```
+
+> **Note:** Pour `EMAIL_PASSWORD`, générez un mot de passe d'application via [Google Account](https://myaccount.google.com/apppasswords) si vous utilisez Gmail.
+
 ## 🚀 Lancement de l'application
 
-**En développement**:
+**En développement:**
 
 ```bash
 npm run dev
 ```
 
-**En production**:
+**En production:**
 
 ```bash
 npm start
@@ -75,15 +94,13 @@ L'application sera accessible à l'adresse: [http://localhost:3000](http://local
 
 ## 📁 Structure du projet
 
-```
+```bash
 projet-web-2024-2025/
 ├── config/             # Configuration (base de données, etc.)
-├── controllers/        # Contrôleurs pour la logique métier
-├── models/             # Modèles de données
 ├── public/             # Fichiers statiques (CSS, JS, images)
 ├── routes/             # Routes de l'application
 ├── sql/                # Scripts SQL
-├── utils/              # Utilitaires
+├── test/               # Tests de l'application
 ├── views/              # Templates EJS
 ├── .env                # Variables d'environnement (non versionné)
 ├── .gitignore          # Fichiers ignorés par Git
@@ -92,11 +109,7 @@ projet-web-2024-2025/
 └── README.md           # Documentation
 ```
 
-## 📄 Licence
+## 👨‍💻 Auteurs
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## ✒️ Auteurs
-
-- **JIN Cristophe**
-- **PIGET Mathéo**
+- **JIN Cristophe** - [GitLab](https://moule.informatique.univ-paris-diderot.fr/jinc)
+- **PIGET Mathéo** - [GitLab](https://moule.informatique.univ-paris-diderot.fr/piget)
