@@ -72,8 +72,14 @@
                 <label>Description</label>
                 <!-- Affiche la description ou un message par défaut si non définie -->
                 <p><%= meeting.description || 'Aucune description' %></p>
+
+                <div class="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <!-- Affiche le lieu ou un message par défaut si non défini -->
+                    <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
+                </div>
             </div>
-            
+
             <!-- Nom de l'organisateur de la réunion -->
             <div class="info-group">
                 <label>Organisateur</label>
@@ -185,16 +191,6 @@
                         <li>Aucun participant</li>
                     <% } %>
                 </ul>
-            </div>
-            
-            <!-- Lieu de la réunion -->
-            <div class="info-group">
-                <label>Lieu</label>
-                <div class="location-info">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <!-- Affiche le lieu ou un message par défaut si non défini -->
-                    <p><%= meeting.location || 'Aucun lieu spécifié' %></p>
-                </div>
             </div>
         </div>
 
