@@ -34,7 +34,7 @@ Une application web moderne pour planifier et gérer des réunions collaborative
 1. **Cloner le dépôt**
 
 ```bash
-git clone https://moule.informatique.univ-paris-diderot.fr/jinc/projet-web-2024-2025.git
+git clone https://github.com/PerdSonNoeud/App2Reunion.git
 cd projet-web-2024-2025
 ```
 
