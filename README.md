@@ -95,7 +95,7 @@ L'application sera accessible à l'adresse: [http://localhost:3000](http://local
 ## 📁 Structure du projet
 
 ```bash
-projet-web-2024-2025/
+App2Reunion/
 ├── config/             # Configuration (base de données, etc.)
 ├── public/             # Fichiers statiques (CSS, JS, images)
 ├── routes/             # Routes de l'application
@@ -111,5 +111,5 @@ projet-web-2024-2025/
 
 ## 👨‍💻 Auteurs
 
-- **JIN Cristophe** - [GitLab](https://moule.informatique.univ-paris-diderot.fr/jinc)
-- **PIGET Mathéo** - [GitLab](https://moule.informatique.univ-paris-diderot.fr/piget)
+- **JIN Cristophe** - [GitHub](https://github.com/PerdSonNoeud)
+- **PIGET Mathéo** - [GitHub](https://github.com/Matheo-Piget)
