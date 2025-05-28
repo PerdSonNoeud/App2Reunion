@@ -35,7 +35,7 @@ Une application web moderne pour planifier et gérer des réunions collaborative
 
 ```bash
 git clone https://github.com/PerdSonNoeud/App2Reunion.git
-cd projet-web-2024-2025
+cd App2Reunion
 ```
 
 2. **Installer les dépendances**
